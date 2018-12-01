@@ -7,7 +7,7 @@ namespace JDBot.Infrastructure.Net
 {
     public class WebResourceClient : IResourceClient
     {
-        public async Task<byte[]> DownloadImageAsync(string url)
+        public async Task<ImageResource> DownloadImageAsync(string url)
         {
             using (var client = new WebClient())
             {

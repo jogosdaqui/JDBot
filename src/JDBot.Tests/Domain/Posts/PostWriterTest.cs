@@ -16,14 +16,14 @@ namespace JDBot.Tests.Domain.Posts
         {
             var jekyllRootFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "jekyll");
             var web = Substitute.For<IResourceClient>();
-            var screenshot1Data = new byte[] { 1, 1, 1 };
-            web.DownloadImageAsync("http://test/screenshot1.png").Returns(screenshot1Data);
+            var screenshot1 = new ImageResource(new byte[] { 1, 1, 1 }, ".png");
+            web.DownloadImageAsync("http://test/screenshot1.png").Returns(screenshot1);
 
-            var screenshot2Data = new byte[] { 2, 2, 2 };
-            web.DownloadImageAsync("http://test/screenshot2.png").Returns(screenshot2Data);
+            var screenshot2 = new ImageResource(new byte[] { 2, 2, 2 }, ".png");
+            web.DownloadImageAsync("http://test/screenshot2.png").Returns(screenshot2);
 
-            var logoData = new byte[] { 3, 3, 3 };
-            web.DownloadImageAsync("http://test/screenshot3.png").Returns(logoData);
+            var logo = new ImageResource(new byte[] { 3, 3, 3 }, ".png");
+            web.DownloadImageAsync("http://test/screenshot3.png").Returns(logo);
 
             var fs = Substitute.For<IFileSystem>();
 
@@ -64,9 +64,9 @@ test content2";
 
             var expectedImagesFolder = Path.Combine(jekyllRootFolder, "assets", "2018", "11", "28", "test-titulo");
             fs.Received().CreateDirectory(expectedImagesFolder);
-            fs.Received().WriteFile(Path.Combine(expectedImagesFolder, "screenshot1.png"), screenshot1Data);
-            fs.Received().WriteFile(Path.Combine(expectedImagesFolder, "screenshot2.png"), screenshot2Data);
-            fs.Received().WriteFile(Path.Combine(expectedImagesFolder, "logo.png"), logoData);
+            fs.Received().WriteFile(Path.Combine(expectedImagesFolder, "screenshot1.png"), screenshot1.Data);
+            fs.Received().WriteFile(Path.Combine(expectedImagesFolder, "screenshot2.png"), screenshot2.Data);
+            fs.Received().WriteFile(Path.Combine(expectedImagesFolder, "logo.png"), logo.Data);
         }
     }
 }

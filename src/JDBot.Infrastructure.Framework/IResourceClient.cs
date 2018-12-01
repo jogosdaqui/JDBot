@@ -1,10 +1,9 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace JDBot.Infrastructure.Framework
 {
     public interface IResourceClient
     {
-        Task<byte[]> DownloadImageAsync(string url);
+        Task<ImageResource> DownloadImageAsync(string url);
     }
 }

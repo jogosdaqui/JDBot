@@ -42,30 +42,25 @@ namespace JDBot.Domain.Posts
             Logger.Debug($"Realizando o download das imagens e gravando na pasta...");
             foreach (var screenshot in post.Screenshots)
             {
-                var fileName = Path.GetFileName(screenshot);
-                var screenshotFileName = Path.Combine(imagesFolder, fileName);
+                var image = await _web.DownloadImageAsync(screenshot);
 
-                if (File.Exists(screenshotFileName))
-                    Logger.Debug($"Download da imagem {screenshot} já foi realizado anteriormente.");
-                else
+                if (image.Data.Length >= config.IgnoreImagesLowerThanBytes)
                 {
-                    Logger.Debug($"Imagem {screenshot}...");
-                    _fs.WriteFile(screenshotFileName, await _web.DownloadImageAsync(screenshot));
+                    var fileName = Path.Combine(imagesFolder, $"{Path.GetFileNameWithoutExtension(screenshot)}{image.Extension}");
+
+                    Logger.Debug($"Gravando imagem {fileName}...");
+                    _fs.WriteFile(fileName, image.Data);
                 }
             }
 
             // Grava o logo.
             if (!String.IsNullOrEmpty(post.Logo))
             {
-                var logoFileName = Path.Combine(imagesFolder, $"logo{Path.GetExtension(post.Logo)}");
+                var image = await _web.DownloadImageAsync(post.Logo);
+                var fileName = Path.Combine(imagesFolder, $"logo{image.Extension}");
 
-                if (File.Exists(logoFileName))
-                    Logger.Debug($"Download do log já foi realizado anteriormente.");
-                else
-                {
-                    Logger.Debug($"Gravando logo...");
-                    _fs.WriteFile(logoFileName, await _web.DownloadImageAsync(post.Logo));
-                }
+                Logger.Debug($"Gravando logo {fileName}...");
+                _fs.WriteFile(fileName, image.Data);
             }
         }
 

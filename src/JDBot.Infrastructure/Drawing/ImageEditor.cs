@@ -8,6 +8,7 @@ using SixLabors.ImageSharp.Formats.Bmp;
 using SixLabors.ImageSharp.Formats.Gif;
 using SixLabors.ImageSharp.Formats.Jpeg;
 using SixLabors.ImageSharp.Formats.Png;
+using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
 using SixLabors.Primitives;
 
@@ -23,8 +24,14 @@ namespace JDBot.Infrastructure.Drawing
             { ".png", new PngEncoder { CompressionLevel = 10 } }
         };
 
-        public static byte[] Resize(string filename, byte[] data)
+        public static ImageResource Resize(string filename, byte[] data)
         {
+            var result = new ImageResource
+            {
+                Data = data,
+                Extension = Path.GetExtension(filename)
+            };
+
             try
             {
                 using (var image = Image.Load(data))
@@ -43,14 +50,19 @@ namespace JDBot.Infrastructure.Drawing
                     }
 
                     Logger.Debug("Salvando a imagem ...");
-                    var encoder = _encoders[Path.GetExtension(filename)];
+
+                    // Se a imagem têm transparência, então salva com o encoder correspondente,
+                    // mas se não tem, então salva com jpg para resultar numa imagem menor (bytes).
+                    if (!HasTranparency(image))
+                        result.Extension = ".jpg";
+
+                    var encoder = _encoders[result.Extension];
 
                     using (var ms = new MemoryStream())
                     {
                         image.Save(ms, encoder);
-                        return ms.ToArray();
+                        result.Data = ms.ToArray();
                     }
-
                 }
             }
             catch (NotSupportedException)
@@ -58,13 +70,31 @@ namespace JDBot.Infrastructure.Drawing
                 Logger.Warn("Formato de imagem não suportado, não será redimensionada.");
             }
 
-            return data;
+            return result;
 
         }
 
+        public static bool HasTranparency(Image<Rgba32> image)
+        {
+            for (int x = 0; x < image.Width; x++)
+            {
+                for (int y = 0; y < image.Height; y++)
+                {
+                    if ((x == 0 && y == 0) && image[x, y].A == 0)
+                        return true;
+
+                }
+            }
+
+            return false;
+        } 
+
         public static bool HasTranparency(byte[] data)
         {
-            throw new NotImplementedException();
+            using (var image = Image.Load(data))
+            {
+                return HasTranparency(image);
+            }
         }
     }
 }
