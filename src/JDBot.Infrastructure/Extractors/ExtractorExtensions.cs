@@ -14,7 +14,7 @@ namespace JDBot.Infrastructure.Extractors
     {
         private static readonly Regex _getCompanyNameFromTitleRegex = new Regex(@".+\| (?<name>.+)", RegexOptions.Compiled);
         private static readonly Regex _getVimeoIdRegex = new Regex(@"vimeo.com/video/(?<id>\d+)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-        private static readonly Regex _getYoutubeIdRegex = new Regex(@"https://www.youtube.com/(watch\?v=|embed/)(?<id>[a-z0-9\-_]+)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex _getYoutubeIdRegex = new Regex(@"https*://www.youtube.com/(watch\?v=|embed/)(?<id>[a-z0-9\-_]+)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
         private static readonly Regex _removeSizeFromImageUrlRegex = new Regex(@"\-\d+x\d+", RegexOptions.Compiled);
         private static readonly Regex _removePageRegex = new Regex(@"(?<baseUrl>.+)/.+\.(html|htm|php|aspx)$", RegexOptions.Compiled);
 
@@ -115,7 +115,7 @@ namespace JDBot.Infrastructure.Extractors
             // <a href="https://www.youtube.com/watch?v=JpW7PFCJv1E" title="Assista o Gameplay" target="_blank">Assista o Gameplay</a>
             // <a href="https://www.youtube.com/embed/8qVJPZkMaRc?rel=0">YouTube</a>
             // https://www.youtube.com/embed/iXGRVygXDBU
-            var youtubes = doc.QuerySelectorAll("a[href*='https://www.youtube.com/'],a[href*='http://www.youtube.com/'],iframe[src*='https://www.youtube.com/']");
+            var youtubes = doc.QuerySelectorAll("a[href*='://www.youtube.com/'],iframe[src*='://www.youtube.com/']");
 
             foreach (var link in youtubes)
             {

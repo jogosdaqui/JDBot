@@ -47,9 +47,11 @@ namespace JDBot.Tests.Infrastructure.Extractors
             Assert.AreEqual("http://www.firecaststudio.com/press/Jelly Dreams/images/images/treasure03.png", actualScreenshots[8]);
 
             var actualVideos = actual.Videos.ToArray();
-            Assert.AreEqual(1, actualVideos.Length);
+            Assert.AreEqual(2, actualVideos.Length);
             Assert.AreEqual("lJnhD2itMeY", actualVideos[0].Id);
             Assert.AreEqual(VideoKind.YouTube, actualVideos[0].Kind);
+            Assert.AreEqual("4cutOMSUv44", actualVideos[1].Id);
+            Assert.AreEqual(VideoKind.YouTube, actualVideos[1].Kind);
         }
 
         [Test]
@@ -85,9 +87,11 @@ namespace JDBot.Tests.Infrastructure.Extractors
             Assert.AreEqual("http://skahal.github.io/press/kit/snb/images/1_iPhone_01.png", actualScreenshots[0]);
 
             var actualVideos = actual.Videos.ToArray();
-            Assert.AreEqual(1, actualVideos.Length);
+            Assert.AreEqual(2, actualVideos.Length);
             Assert.AreEqual("8qVJPZkMaRc", actualVideos[0].Id);
             Assert.AreEqual(VideoKind.YouTube, actualVideos[0].Kind);
+            Assert.AreEqual("v7yMYS9WeCU", actualVideos[1].Id);
+            Assert.AreEqual(VideoKind.YouTube, actualVideos[1].Kind);
         }
     }
 }

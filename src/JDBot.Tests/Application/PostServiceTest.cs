@@ -29,7 +29,8 @@ namespace JDBot.Tests.Application
             var postImageFolder = Path.Combine(jekyllRootFolder, "assets", now.Year.ToString(), now.Month.ToString("00"), now.Day.ToString("00"), "trilha-ecologica");
             DirectoryAssert.Exists(postImageFolder);
 
-            Assert.AreEqual(11, Directory.GetFiles(postImageFolder, "*.png").Length);
+            Assert.AreEqual(1, Directory.GetFiles(postImageFolder, "*.png").Length);
+            Assert.AreEqual(10, Directory.GetFiles(postImageFolder, "*.jpg").Length);
         }
     }
 }
