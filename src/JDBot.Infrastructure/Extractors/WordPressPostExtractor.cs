@@ -17,13 +17,13 @@ namespace JDBot.Infrastructure.Extractors
                 return null;
 
             var post = new Post();
-            post.Title = title.TextContent;
             post.Content = contents.JoinText();
+            post.Title = title.TextContent;
             post.Category = url.Contains("game") ? PostCategory.Game : PostCategory.News;
             post.FillOriginalUrl(url);
+            post.FillCompanies(doc);
             post.FillTags(doc);
-            post.FillCompanyFromTitle(doc);
-            post.FillVideo(doc);
+            post.FillVideos(doc);
             post.Logo = doc.GetLogo(".wp-post-image");
             post.Screenshots = doc.GetScreenshots(".size-thumbnail");
 

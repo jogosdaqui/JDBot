@@ -5,13 +5,12 @@ using JDBot.Domain.Posts;
 namespace JDBot.Infrastructure.Extractors
 {
     /// <summary>
-    /// Variante de extatror para posts presskit() como :
+    /// Variante de extrator para posts presskit() como :
     /// * http://skahal.github.io/press/kit/snb/index.html
     /// * https://www.vlambeer.com/press/sheet.php?p=LUFTRAUSERS
     /// </summary>
     public class DoPresskitVariant2PostExtractor : IPostExtractor
     {
-        private static readonly Regex _getGameTitleRegex = new Regex(@"(?<name>.+)\sCredits$", RegexOptions.IgnoreCase | RegexOptions.Compiled);
         private static readonly Regex _getRootUrlRegex = new Regex(@"(?<baseUrl>.+)(/index.html|sheet.php\?p=)", RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
         public async Task<Post> ExtractAsync(string url)
@@ -27,11 +26,11 @@ namespace JDBot.Infrastructure.Extractors
                 return null;
 
             var post = new Post();
-            post.Title = _getGameTitleRegex.Replace(title.TextContent, "$1");
             post.Content = content.TextContent;
+            post.FillTitle(doc);
             post.Category = PostCategory.Game;
             post.FillOriginalUrl(url);
-            post.FillVideo(doc);
+            post.FillVideos(doc);
 
             var companyName = company.TextContent.Replace("About ", string.Empty);
             post.Companies = new string[] { companyName };

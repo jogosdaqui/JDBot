@@ -55,5 +55,22 @@ namespace JDBot.Tests.Infrastructure.Extractors
             Assert.AreEqual(12, actualScreenshots.Length);
             Assert.AreEqual("http://www.pixelripped.com/presskit/images/screenshot0.jpg", actualScreenshots[2]);
         }
+
+        [Test]
+        public async Task Extract_Url3_Post()
+        {
+            var target = new GenericPostExtractor();
+            var actual = await target.ExtractAsync("http://presskit.swordlegacy.com/");
+            Assert.AreEqual("Sword Legacy: Omen", actual.Title);
+            Assert.AreEqual(6, actual.Videos.Count());
+        }
+
+        [Test]
+        public async Task Extract_Url4_Post()
+        {
+            var target = new GenericPostExtractor();
+            var actual = await target.ExtractAsync("http://www.deadmushroom.com.br/?portfolio=amazing-spider-attack");
+            Assert.IsFalse(string.IsNullOrEmpty(actual.Logo));
+        }
     }
 }

@@ -1,0 +1,2 @@
+﻿\s*(?<name>.+) (is a game company|began the development)
+Developer: (?<name>.+);

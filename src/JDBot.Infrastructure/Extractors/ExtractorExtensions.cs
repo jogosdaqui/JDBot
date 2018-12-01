@@ -7,32 +7,31 @@ using System.Threading.Tasks;
 using AngleSharp;
 using AngleSharp.Dom;
 using JDBot.Domain.Posts;
+using JDBot.Infrastructure.Texts;
 
 namespace JDBot.Infrastructure.Extractors
 {
     public static class ExtractorExtensions
     {
-        private static readonly Regex _getCompanyNameFromTitleRegex = new Regex(@".+\| (?<name>.+)", RegexOptions.Compiled);
         private static readonly Regex _getVimeoIdRegex = new Regex(@"vimeo.com/video/(?<id>\d+)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
         private static readonly Regex _getYoutubeIdRegex = new Regex(@"https*://www.youtube.com/(watch\?v=|embed/)(?<id>[a-z0-9\-_]+)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
         private static readonly Regex _removeSizeFromImageUrlRegex = new Regex(@"\-\d+x\d+", RegexOptions.Compiled);
         private static readonly Regex _removePageRegex = new Regex(@"(?<baseUrl>.+)/.+\.(html|htm|php|aspx)$", RegexOptions.Compiled);
 
+        private static readonly RegexFile _titleFromHtmlRegex = new RegexFile("Extractors/TitleRegex.html.txt");
+        private static readonly RegexFile _titleFromTextRegex = new RegexFile("Extractors/TitleRegex.text.txt");
+        private static readonly RegexFile _companyFromHtmlRegex = new RegexFile("Extractors/CompanyRegex.html.txt");
+        private static readonly RegexFile _companyFromTextRegex = new RegexFile("Extractors/CompanyRegex.text.txt");
+
         public static void FillTags(this Post post, IDocument doc)
         {
             var tags = new List<string>();
-            var companyNameMatch = _getCompanyNameFromTitleRegex.Match(doc.Title);
 
-            if (companyNameMatch.Success)
-                tags.Add(SanitizeTag(companyNameMatch.Groups["name"].Value));
-            else
+            foreach (var company in post.Companies)
             {
-                foreach (var company in post.Companies)
-                {
-                    tags.Add(SanitizeTag(company));
-                }
+                tags.Add(SanitizeTag(company));
             }
-
+       
             var content = post.Content;
 
             if (content.Contains("público alvo criança"))
@@ -86,19 +85,34 @@ namespace JDBot.Infrastructure.Extractors
             return value.ToLowerInvariant().Replace(" ", "-");
         }
 
-        public static void FillCompanyFromTitle(this Post post, IDocument doc)
+        public static void FillTitle(this Post post, IDocument doc)
         {
-            var companyNameMatch = _getCompanyNameFromTitleRegex.Match(doc.Title);
+            post.Title = _titleFromTextRegex.GetValue("title", doc.Title, doc.Body.TextContent);
 
-            if (companyNameMatch.Success)
-                post.Companies = new string[] { companyNameMatch.Groups["name"].Value };
+            if (String.IsNullOrEmpty(post.Title))
+                post.Title = _titleFromHtmlRegex.GetValue("title", doc.Head.OuterHtml, doc.Body.OuterHtml);
+
+            if (String.IsNullOrEmpty(post.Title))
+                post.Title = doc.Title;
         }
 
-        public static void FillVideo(this Post post, IDocument doc)
+        public static void FillCompanies(this Post post, IDocument doc)
+        {
+            var match = _companyFromTextRegex.Match(doc.Title, doc.Body.TextContent);
+
+            if (!match.Success)
+                match = _companyFromHtmlRegex.Match(doc.Head.OuterHtml, doc.Body.OuterHtml);
+
+            if (match.Success)
+                 post.Companies = new string[] { match.Groups["name"].Value.Trim() };
+            else
+                post.Companies = new string[0];
+        }
+
+        public static void FillVideos(this Post post, IDocument doc)
         {
             var videos = new List<Video>();
 
-            // <iframe width="940" height="460" src="//player.vimeo.com/video/84909758?color=C0091C" frameborder="0" allowfullscreen=""></iframe>
             var vimeos = doc.QuerySelectorAll("iframe[src*='player.vimeo.com']");
 
             foreach(var link in vimeos)
@@ -106,15 +120,9 @@ namespace JDBot.Infrastructure.Extractors
                 var idMatch = _getVimeoIdRegex.Match(link.OuterHtml);
 
                 if (idMatch.Success)
-                {
-                    post.Content += $"\n\n{{% vimeo {idMatch.Groups["id"].Value} %}}";
                     videos.Add(new Video { Id = idMatch.Groups["id"].Value, Kind = VideoKind.Vimeo });
-                }
             }
 
-            // <a href="https://www.youtube.com/watch?v=JpW7PFCJv1E" title="Assista o Gameplay" target="_blank">Assista o Gameplay</a>
-            // <a href="https://www.youtube.com/embed/8qVJPZkMaRc?rel=0">YouTube</a>
-            // https://www.youtube.com/embed/iXGRVygXDBU
             var youtubes = doc.QuerySelectorAll("a[href*='://www.youtube.com/'],iframe[src*='://www.youtube.com/']");
 
             foreach (var link in youtubes)
@@ -122,13 +130,10 @@ namespace JDBot.Infrastructure.Extractors
                 var idMatch = _getYoutubeIdRegex.Match(link.OuterHtml);
 
                 if (idMatch.Success)
-                {
-                    post.Content += $"\n\n{{% youtube {idMatch.Groups["id"].Value} %}}";
-                    videos.Add(new Video { Id = idMatch.Groups["id"].Value, Kind = VideoKind.YouTube });
-                }
+                     videos.Add(new Video { Id = idMatch.Groups["id"].Value, Kind = VideoKind.YouTube });
             }
 
-            post.Videos = videos.GroupBy(k => k.Id, e => e.Kind).Select(g => new Video { Id = g.Key, Kind = g.First() });
+            post.Videos = videos.GroupBy(k => k.Id, e => e.Kind).Select(g => new Video { Id = g.Key, Kind = g.First() }).ToArray();
         }
 
         public static void FillOriginalUrl(this Post post, string originalUrl)

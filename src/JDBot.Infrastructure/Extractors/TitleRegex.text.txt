@@ -1,0 +1,3 @@
+﻿(?<title>.+)\sCredits$
+Game Title / (?<title>.+)
+Press \| (?<title>.+)

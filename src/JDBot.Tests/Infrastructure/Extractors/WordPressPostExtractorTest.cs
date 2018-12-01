@@ -49,13 +49,15 @@ namespace JDBot.Tests.Infrastructure.Extractors
         }
 
         [Test]
-        public async Task Extract_WithVimeoVide_PostWithVimeoTag()
+        public async Task Extract_WithVimeoVideo_PostWithVimeoTag()
         {
             var target = new WordPressPostExtractor();
             var actual = await target.ExtractAsync("http://www.monsterbed.com.br/games/laco-macanudo-gaucho/");
 
-            Assert.IsNotNull(actual);
-            StringAssert.Contains("{% vimeo 84909758 %}", actual.Content);
+            var actualVideos = actual.Videos.ToArray();
+            Assert.AreEqual(1, actualVideos.Length);
+            Assert.AreEqual(VideoKind.Vimeo, actualVideos[0].Kind);
+            Assert.AreEqual("84909758", actualVideos[0].Id);
         }
     }
 }

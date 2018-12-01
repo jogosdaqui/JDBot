@@ -6,7 +6,7 @@ using JDBot.Domain.Posts;
 namespace JDBot.Infrastructure.Extractors
 {
     /// <summary>
-    /// Variante de extatror para posts presskit() como http://www.firecaststudio.com/press/sheet.php?p=Jelly%20Dreams.
+    /// Variante de extrator para posts presskit() como http://www.firecaststudio.com/press/sheet.php?p=Jelly%20Dreams.
     /// </summary>
     public class DoPresskitVariant1PostExtractor : IPostExtractor
     {
@@ -23,11 +23,11 @@ namespace JDBot.Infrastructure.Extractors
                 return null;
 
             var post = new Post();
-            post.Title = doc.Title;
             post.Content = content.TextContent;
+            post.Title = doc.Title;
             post.Category = PostCategory.Game;
             post.FillOriginalUrl(url);
-            post.FillVideo(doc);
+            post.FillVideos(doc);
            
             var companyUrl = _getCompanyUrlRegex.Replace(url, String.Empty);
             var companyDoc = await companyUrl.GetContentAsync();

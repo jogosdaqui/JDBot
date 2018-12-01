@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using JDBot.Infrastructure.Framework;
@@ -83,6 +84,8 @@ namespace JDBot.Domain.Posts
         {
             var content = post.Content.Replace("\n", "\n\n");
 
+            content = AddVideos(post.Videos, content);
+
             return $@"---
 published: true
 layout: post
@@ -93,6 +96,14 @@ categories: {post.Category}
 tags: {String.Join(" ", post.Tags)}
 ---
 {content}";
+        }
+
+        private static string AddVideos(IEnumerable<Video> videos, string content)
+        {
+            foreach(var video in videos)
+                content += $"\n\n{{% {video.Kind.ToString().ToLowerInvariant()} {video.Id} %}}";
+
+            return content;
         }
 
         private static object GetPostTitle(string title)

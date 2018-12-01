@@ -22,6 +22,9 @@ namespace JDBot.Tests.Domain.Posts
             var screenshot2 = new ImageResource(new byte[] { 2, 2, 2 }, ".png");
             web.DownloadImageAsync("http://test/screenshot2.png").Returns(screenshot2);
 
+            var screenshot3 = new ImageResource(new byte[] { 2, 2 }, ".png");
+            web.DownloadImageAsync("http://test/screenshot3.png").Returns(screenshot3);
+
             var logo = new ImageResource(new byte[] { 3, 3, 3 }, ".png");
             web.DownloadImageAsync("http://test/screenshot3.png").Returns(logo);
 
@@ -37,10 +40,10 @@ namespace JDBot.Tests.Domain.Posts
                 Tags = new string[] { "test-company", "test-tag" },
                 Content = "test content1\ntest content2",
                 Logo = "http://test/screenshot3.png",
-                Screenshots = new string [] { "http://test/screenshot1.png", "http://test/screenshot2.png" }
+                Screenshots = new string [] { "http://test/screenshot1.png", "http://test/screenshot2.png", "http://test/screenshot3.png" }
             };
 
-            var config = new PostConfig { Author = "Test author" };
+            var config = new PostConfig { Author = "Test author", IgnoreImagesLowerThanBytes = 3 };
             await target.WriteAsync(post, config);
 
             var expectedPostFolder = Path.Combine(jekyllRootFolder, "_posts", "2018");

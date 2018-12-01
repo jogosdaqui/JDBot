@@ -13,6 +13,7 @@
     <Folder Include="IO\" />
     <Folder Include="Logging\" />
     <Folder Include="Drawing\" />
+    <Folder Include="Texts\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\JDBot.Domain\JDBot.Domain.csproj" />
@@ -21,5 +22,25 @@
   <ItemGroup>
     <PackageReference Include="AngleSharp" Version="0.9.11" />
     <PackageReference Include="SixLabors.ImageSharp" Version="1.0.0-beta0005" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="Extractors\CompanyRegex.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Extractors\TitleRegex.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Extractors\CompanyRegex.text.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Extractors\TitleRegex.html.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Extractors\TitleRegex.text.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Extractors\CompanyRegex.html.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 </Project>
