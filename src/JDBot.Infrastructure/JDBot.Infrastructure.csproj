@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Class1.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Extractors\" />
+    <Folder Include="Net\" />
+    <Folder Include="IO\" />
+    <Folder Include="Logging\" />
+    <Folder Include="Drawing\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\JDBot.Domain\JDBot.Domain.csproj" />
+    <ProjectReference Include="..\JDBot.Infrastructure.Framework\JDBot.Infrastructure.Framework.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="AngleSharp" Version="0.9.11" />
+    <PackageReference Include="SixLabors.ImageSharp" Version="1.0.0-beta0005" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Posts\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="Posts\EmptyEnumeration.cs" />
+    <Compile Remove="Common\ICrawler.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\JDBot.Infrastructure.Framework\JDBot.Infrastructure.Framework.csproj" />
+  </ItemGroup>
+</Project>
