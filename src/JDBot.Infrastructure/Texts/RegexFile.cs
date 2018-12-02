@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using JDBot.Infrastructure.Framework;
 using Newtonsoft.Json;
 
 namespace JDBot.Infrastructure.Texts
@@ -92,6 +93,7 @@ namespace JDBot.Infrastructure.Texts
             {
                 foreach (var input in inputs)
                 {
+                    Logger.Debug($"Executando a regex: {r.Pattern}...");
                     result = r.Match(input);
 
                     if (result.Success)

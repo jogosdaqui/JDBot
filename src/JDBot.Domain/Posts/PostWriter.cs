@@ -43,15 +43,18 @@ namespace JDBot.Domain.Posts
             Logger.Debug($"Realizando o download das imagens e gravando na pasta...");
             foreach (var screenshot in post.Screenshots)
             {
+                Logger.Debug($"Screenshot {screenshot}");
                 var image = await _web.DownloadImageAsync(screenshot);
 
                 if (image.Data.Length >= config.IgnoreImagesLowerThanBytes)
                 {
                     var fileName = Path.Combine(imagesFolder, $"{Path.GetFileNameWithoutExtension(screenshot)}{image.Extension}");
 
-                    Logger.Debug($"Gravando imagem {fileName}...");
+                    Logger.Debug($"Gravando screenshot {fileName}...");
                     _fs.WriteFile(fileName, image.Data);
                 }
+                else
+                    Logger.Warn("Não será gravada, pois é menor que o tamanho mínimo esperado.");
             }
 
             // Grava o logo.

@@ -49,8 +49,6 @@ namespace JDBot.Infrastructure.Drawing
                         image.Mutate(x => x.Resize(options));
                     }
 
-                    Logger.Debug("Salvando a imagem ...");
-
                     // Se a imagem têm transparência, então salva com o encoder correspondente,
                     // mas se não tem, então salva com jpg para resultar numa imagem menor (bytes).
                     if (!HasTranparency(image))

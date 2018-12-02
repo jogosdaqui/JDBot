@@ -12,6 +12,6 @@
     <ProjectReference Include="..\JDBot.Infrastructure\JDBot.Infrastructure.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Mono.Options.Core" Version="1.0.0" />
+    <PackageReference Include="McMaster.Extensions.CommandLineUtils" Version="2.2.5" />
   </ItemGroup>
 </Project>
