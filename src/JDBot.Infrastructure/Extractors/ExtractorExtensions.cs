@@ -18,10 +18,9 @@ namespace JDBot.Infrastructure.Extractors
         private static readonly Regex _removeSizeFromImageUrlRegex = new Regex(@"\-\d+x\d+", RegexOptions.Compiled);
         private static readonly Regex _removePageRegex = new Regex(@"(?<baseUrl>.+)/.+\.(html|htm|php|aspx)$", RegexOptions.Compiled);
 
-        private static readonly RegexFile _titleFromHtmlRegex = new RegexFile("Extractors/TitleRegex.html.txt");
-        private static readonly RegexFile _titleFromTextRegex = new RegexFile("Extractors/TitleRegex.text.txt");
-        private static readonly RegexFile _companyFromHtmlRegex = new RegexFile("Extractors/CompanyRegex.html.txt");
-        private static readonly RegexFile _companyFromTextRegex = new RegexFile("Extractors/CompanyRegex.text.txt");
+        private static readonly RegexFile _titleRegex = new RegexFile("Extractors/TitleRegex.json");
+        private static readonly RegexFile _companyRegex = new RegexFile("Extractors/CompanyRegex.json");
+        private static readonly RegexFile _tagRegex = new RegexFile("Extractors/TagRegex.json");
 
         public static void FillTags(this Post post, IDocument doc)
         {
@@ -33,46 +32,11 @@ namespace JDBot.Infrastructure.Extractors
             }
        
             var content = post.Content;
-
-            if (content.Contains("público alvo criança"))
-                tags.Add("infantil");
-
-            if (content.Contains("jogo plataforma"))
-                tags.Add("plataforma");
-
-            if (content.Contains("publicado para Facebook, Android e iOS"))
-            {
-                tags.Add("facebook");
-                tags.Add("android");
-                tags.Add("ios");
-            }
-
-            if (content.Contains("PC, MAC and Linux") || content.Contains("Windows, Mac, Linux"))
-            {
-                tags.Add("windows");
-                tags.Add("mac");
-                tags.Add("linux");
-            }
-
-            if (content.Contains("player.vimeo.com"))
-            {
-                tags.Add("video");
-            }
+             tags.AddRange(_tagRegex.GetResponses(content));
 
             foreach (var item in doc.QuerySelectorAll("dd"))
             {
-                if (item.InnerHtml.Contains(">iOS"))
-                    tags.Add("ios");
-
-                if (item.InnerHtml.Contains(">Android"))
-                    tags.Add("android");
-
-                if (item.InnerHtml.Contains(">Mac"))
-                    tags.Add("mac");
-
-                if (item.InnerHtml.Contains(">PC"))
-                    tags.Add("windows");
-
+                tags.AddRange(_tagRegex.GetResponses(item.InnerHtml));
             }
 
             tags.Add("press-release");
@@ -87,10 +51,10 @@ namespace JDBot.Infrastructure.Extractors
 
         public static void FillTitle(this Post post, IDocument doc)
         {
-            post.Title = _titleFromTextRegex.GetValue("title", doc.Title, doc.Body.TextContent);
+            post.Title = _titleRegex.GetValueByTag("text", "title", doc.Title, doc.Body.TextContent);
 
             if (String.IsNullOrEmpty(post.Title))
-                post.Title = _titleFromHtmlRegex.GetValue("title", doc.Head.OuterHtml, doc.Body.OuterHtml);
+                post.Title = _titleRegex.GetValueByTag("html", "title", doc.Head.OuterHtml, doc.Body.OuterHtml);
 
             if (String.IsNullOrEmpty(post.Title))
                 post.Title = doc.Title;
@@ -98,10 +62,10 @@ namespace JDBot.Infrastructure.Extractors
 
         public static void FillCompanies(this Post post, IDocument doc)
         {
-            var match = _companyFromTextRegex.Match(doc.Title, doc.Body.TextContent);
+            var match = _companyRegex.MatchByTag("text", doc.Title, doc.Body.TextContent);
 
             if (!match.Success)
-                match = _companyFromHtmlRegex.Match(doc.Head.OuterHtml, doc.Body.OuterHtml);
+                match = _companyRegex.MatchByTag("html", doc.Head.OuterHtml, doc.Body.OuterHtml);
 
             if (match.Success)
                  post.Companies = new string[] { match.Groups["name"].Value.Trim() };

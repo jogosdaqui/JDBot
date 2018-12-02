@@ -4,31 +4,103 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using Newtonsoft.Json;
 
 namespace JDBot.Infrastructure.Texts
 {
     public class RegexFile
     {
-        private readonly List<Regex> _regexes = new List<Regex>();
+        private RegexOptions _defaultOptions;
+        private readonly List<RegexInfo> _regexes = new List<RegexInfo>();
 
         public RegexFile(string fileName)
         {
             LoadFile(fileName);
         }
 
+        public int RegexesCount { get => _regexes.Count; }
+
         public Match Match(params string[] inputs)
         {
-            Match result = null;
-            inputs = inputs.Where(i => !string.IsNullOrEmpty(i)).ToArray();
+            return MatchByTag(null, inputs);
+        }
 
-            foreach (var r in _regexes)
+        public Match MatchByTag(string tag, params string[] inputs)
+        {
+            return ExecuteRegexes(tag, inputs);
+        }
+
+        public string GetValue(string groupName, params string[] inputs)
+        {
+            return GetValueByTag(null, groupName, inputs);
+        }
+
+        public string GetValueByTag(string tag, string groupName, params string[] inputs)
+        {
+            var match = MatchByTag(tag, inputs);
+            return match.Success ? match.Groups[groupName].Value.Trim() : String.Empty;
+        }
+
+        public IEnumerable<string> GetResponses(params string[] inputs)
+        {
+            var result = new List<string>();
+
+            ExecuteRegexes(null, inputs, (match, info) =>
+            {
+                foreach(var r in info.Responses)
+                {
+                    var resultItem = r;
+
+                    foreach(var groupName in info.Regex.GetGroupNames())
+                    {
+                        resultItem = r.Replace($"${{{groupName}}}", match.Groups[groupName].Value);
+                    }
+
+                    result.Add(resultItem);
+                }
+            });
+
+            return result.Distinct();
+        }
+
+        private void LoadFile(string fileName)
+        {
+            var content = File.ReadAllText(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, fileName), Encoding.UTF8);
+            var regexesInfo = JsonConvert.DeserializeObject<RegexesInfo>(content);
+
+            _defaultOptions = regexesInfo.DefaultOptions == null ? RegexOptions.None : RegexInfo.ParseOptions(regexesInfo.DefaultOptions);
+
+            foreach (var info in regexesInfo.Regexes)
+            {
+                info.Initialize(_defaultOptions);
+                _regexes.Add(info);
+            }
+        }
+
+        private Match ExecuteRegexes(string tag, string[] inputs, Action<Match, RegexInfo> callback = null)
+        {
+            var result = System.Text.RegularExpressions.Match.Empty;
+            inputs = inputs.Where(i => !string.IsNullOrEmpty(i)).ToArray();
+            var regexes = _regexes;
+
+            if (!String.IsNullOrEmpty(tag))
+            {
+                regexes = _regexes.Where(r => r.Tags.Contains(tag)).ToList();
+            }
+
+            foreach (var r in regexes)
             {
                 foreach (var input in inputs)
                 {
                     result = r.Match(input);
 
                     if (result.Success)
-                        return result;
+                    {
+                        if (callback == null)
+                            return result;
+                        else
+                            callback(result, r);
+                    }
                 }
 
             }
@@ -36,20 +108,5 @@ namespace JDBot.Infrastructure.Texts
             return result;
         }
 
-        public string GetValue(string groupName, params string[] inputs)
-        {
-            var match = Match(inputs);
-            return match.Success ? match.Groups[groupName].Value.Trim() : String.Empty;
-        }
-
-        private void LoadFile(string fileName)
-        {
-            var lines = File.ReadAllLines(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, fileName), Encoding.UTF8);
-
-            foreach(var line in lines)
-            {
-                _regexes.Add(new Regex(line, RegexOptions.Compiled | RegexOptions.IgnoreCase));
-            }
-        }
     }
 }

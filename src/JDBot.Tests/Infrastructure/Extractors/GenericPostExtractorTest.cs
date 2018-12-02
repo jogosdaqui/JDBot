@@ -36,7 +36,7 @@ namespace JDBot.Tests.Infrastructure.Extractors
             Assert.AreEqual("http://www.moiragame.com/images/presskit/thumbs/moira_logo_imgt.png", actual.Logo);
 
             var actualScreenshots = actual.Screenshots.ToArray();
-            Assert.AreEqual(13, actualScreenshots.Length);
+            Assert.AreEqual(14, actualScreenshots.Length);
             Assert.AreEqual("http://www.moiragame.com/images/header.png", actualScreenshots[0]);
 
             var actualVideos = actual.Videos.ToArray();
@@ -62,6 +62,10 @@ namespace JDBot.Tests.Infrastructure.Extractors
             var target = new GenericPostExtractor();
             var actual = await target.ExtractAsync("http://presskit.swordlegacy.com/");
             Assert.AreEqual("Sword Legacy: Omen", actual.Title);
+
+            var actualScreenshots = actual.Screenshots.ToArray();
+            Assert.AreEqual(14, actualScreenshots.Length);
+         
             Assert.AreEqual(6, actual.Videos.Count());
         }
 

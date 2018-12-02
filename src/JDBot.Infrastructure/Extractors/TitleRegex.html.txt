@@ -1,2 +1,0 @@
-﻿<title>\s*(?<title>.+) Press Kit\s*</title>
-<title>\s*(?<title>\S.+\S) (\||-|–) .+\s*</title>

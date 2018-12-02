@@ -1,0 +1,20 @@
+﻿{
+  "DefaultOptions": [ "IgnoreCase" ],
+  "regexes": [
+    // HTML
+    {
+      "pattern": "<title>\\s*.+ (\\||-|–) (?<name>\\S.+\\S)\\s*</title>",
+      "tags": [ "html" ]
+    },
+
+    // TEXT
+    {
+      "pattern": "\\s*(?<name>.+) (is a game company|began the development)",
+      "tags": [ "text" ]
+    },
+    {
+      "pattern": "Developer: (?<name>.+);",
+      "tags": [ "text" ]
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+﻿{
+  "regexes": [
+    {
+      "pattern": "^abc",
+      "options": [ "Compiled", "IgnoreCase" ],
+      "tags": [ "tag1", "tag2" ],
+      "replacement": "xpto",
+      "responses": [ "111", "222" ]
+    },
+    {
+      "pattern": "^def"
+    },
+    {
+      "pattern": "abc.+def.+(?<name>ghi).+klm",
+      "options": [ "Compiled" ],
+      "tags": [ "tag1", "tag3" ],
+      "replacement": "xpto",
+      "responses": [ "333", "444", "${name} test" ]
+    }
+  ]
+}

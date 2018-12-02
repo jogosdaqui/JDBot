@@ -1,0 +1,28 @@
+﻿{
+  "DefaultOptions": [ "IgnoreCase" ],
+  "regexes": [
+    // HTML
+    {
+      "pattern": "<title>\\s*(?<title>.+) Press Kit\\s*</title>",
+      "tags": [ "html" ]
+    },
+    {
+      "pattern": "<title>\\s*(?<title>\\S.+\\S) (\\||-|–) .+\\s*</title>",
+      "tags": [ "html" ]
+    },
+
+    // TEXT
+    {
+      "pattern": "(?<title>.+)\\sCredits$",
+      "tags": [ "text" ]
+    },
+    {
+      "pattern": "Game Title / (?<title>.+)",
+      "tags": [ "text" ]
+    },
+    {
+      "pattern": "Press \\| (?<title>.+)",
+      "tags": [ "text" ]
+    }
+  ]
+}

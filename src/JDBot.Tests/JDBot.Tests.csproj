@@ -12,6 +12,7 @@
     <Folder Include="Application\" />
     <Folder Include="Infrastructure\IO\" />
     <Folder Include="Infrastructure\Drawing\" />
+    <Folder Include="Infrastructure\Texts\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="NUnit" Version="3.11.0" />
@@ -33,6 +34,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Infrastructure\Drawing\HasNoTransparencyImage.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Infrastructure\Texts\sample-regex-file-1.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

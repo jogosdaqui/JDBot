@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using AngleSharp.Dom;
 using JDBot.Domain.Posts;
@@ -23,11 +24,11 @@ namespace JDBot.Infrastructure.Extractors
 
             foreach (var filter in new string[] { "logo", "avatar", "icon" })
             {
-                post.Logo = post.Screenshots.FirstOrDefault(p => p.Contains(filter));
+                post.Logo = post.Screenshots.FirstOrDefault(p => p.IndexOf(filter, StringComparison.OrdinalIgnoreCase) > -1);
 
                 if (!string.IsNullOrEmpty(post.Logo))
                 {
-                    post.Screenshots = post.Screenshots.Where(p => !p.Contains(filter)).ToArray();
+                    post.Screenshots = post.Screenshots.Where(p => !p.Equals(post.Logo, StringComparison.OrdinalIgnoreCase)).ToArray();
                     break;
                 }
             }

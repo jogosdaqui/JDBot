@@ -1,0 +1,73 @@
+﻿{
+  "DefaultOptions":  [ "IgnoreCase" ],
+  "regexes": [
+    {
+      "pattern": "público alvo criança",
+      "responses": [ "infantil" ]
+    },
+    {
+      "pattern": "jogo (?<genre>(plataforma))",
+      "responses": [ "${genre}" ]
+    },
+    {
+      "pattern": "jogo de (?<genre>(plataforma|corrida|luta))",
+      "responses": [ "${genre}" ]
+    },
+    {
+      "pattern": "publicado para Facebook, Android e iOS",
+      "responses": [ "facebook", "android", "ios" ]
+    },
+    {
+      "pattern": "PC, MAC and Linux",
+      "responses": [ "windows", "mac", "linux" ]
+    },
+    {
+      "pattern": "Windows, Mac, Linux",
+      "responses": [ "windows", "mac", "linux" ]
+    },
+    {
+      "pattern": "(player.vimeo.com|https*://(www\\.)*youtube.com)",
+      "responses": [ "video" ]
+    },
+    {
+      "pattern": ">iOS",
+      "responses": [ "ios" ]
+    },
+    {
+      "pattern": ">Android",
+      "responses": [ "android" ]
+    },
+    {
+      "pattern": ">Mac",
+      "responses": [ "mac" ]
+    },
+    {
+      "pattern": ">PC",
+      "responses": [ "windows" ]
+    },
+    {
+      "pattern": "Arcade, Party Game",
+      "responses": [ "arcade", "party-game" ]
+    },
+    {
+      "pattern": "Platforms:\\s*(?<name>\\S+)",
+      "responses": [ "${name}" ]
+    },
+    {
+      "pattern": "Turn-Based Tactical RPG",
+      "responses": [ "rpg" ]
+    },
+    {
+      "pattern": "estilo runner",
+      "responses": [ "runner" ]
+    },
+    { 
+      "pattern": "Plataform / iOS",
+      "responses": [ "ios", "mobile" ]
+    },
+    { 
+      "pattern": "Plataform / Android, iOS",
+      "responses": [ "android", "ios", "mobile" ]
+    }
+  ]
+}
