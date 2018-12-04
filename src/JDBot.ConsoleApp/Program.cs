@@ -1,4 +1,5 @@
-﻿using McMaster.Extensions.CommandLineUtils;
+﻿using JDBot.ConsoleApp.Commands.Posts;
+using McMaster.Extensions.CommandLineUtils;
 
 namespace JDBot.ConsoleApp
 {

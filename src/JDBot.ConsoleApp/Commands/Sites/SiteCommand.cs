@@ -5,7 +5,7 @@ using JDBot.Infrastructure.Framework;
 using JDBot.Infrastructure.Net;
 using McMaster.Extensions.CommandLineUtils;
 
-namespace JDBot.ConsoleApp
+namespace JDBot.ConsoleApp.Commands.Posts
 {
     [Command(Name = "site", Description = "Realiza operações em relação a todo site, como publicá-lo.")]
     public class SiteCommand : CommandBase

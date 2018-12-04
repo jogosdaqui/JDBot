@@ -3,7 +3,7 @@ using JDBot.Infrastructure.Framework;
 using JDBot.Infrastructure.Logging;
 using McMaster.Extensions.CommandLineUtils;
 
-namespace JDBot.ConsoleApp
+namespace JDBot.ConsoleApp.Commands
 {
     [Command]
     public abstract class CommandBase

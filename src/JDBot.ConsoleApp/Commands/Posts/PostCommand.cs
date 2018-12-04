@@ -7,9 +7,10 @@ using JDBot.Infrastructure.Framework;
 using JDBot.Infrastructure.IO;
 using McMaster.Extensions.CommandLineUtils;
 
-namespace JDBot.ConsoleApp
+namespace JDBot.ConsoleApp.Commands.Posts
 {
     [Command(Name = "post", Description = "Escreve posts no formato do site a partir de urls de outros posts.")]
+    [Subcommand("new", typeof(NewSubcommand))]
     public class PostCommand : CommandBase
     {
         // Opções para chamada direta, sem arquivo.
