@@ -1,6 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using JDBot.Domain.Posts;
 using JDBot.Infrastructure.Extractors;
 using JDBot.Infrastructure.IO;
@@ -35,12 +33,19 @@ namespace JDBot.Application
             _writer = new PostWriter(jekyllRootFolder, resourceClient, fs);
         }
 
-        public async Task WritePostAsync(string sourcePostUrl, PostConfig config)
+        public async Task<PostWrittenResult> WritePostAsync(string sourcePostUrl, PostConfig config)
         {
             var post = await _reader.ReadAsync(sourcePostUrl);
 
             if(post != null)
-                await _writer.WriteAsync(post, config);
+                return await _writer.WriteAsync(post, config);
+
+            return PostWrittenResult.Empty;
+        }
+
+        public async Task<PostWrittenResult> WritePostAsync(Post post)
+        {
+            return await _writer.WriteAsync(post, PostConfig.Empty);
         }
     }
 }

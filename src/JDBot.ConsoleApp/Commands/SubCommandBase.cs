@@ -3,12 +3,12 @@ using JDBot.Infrastructure.Framework;
 using JDBot.Infrastructure.Logging;
 using McMaster.Extensions.CommandLineUtils;
 
-namespace JDBot.ConsoleApp
+namespace JDBot.ConsoleApp.Commands
 {
     [Command]
-    public abstract class CommandBase
+    public abstract class SubCommandBase
     {
-        [Option("--v", Description = "Define o nível da verbosidade (debug, info, warn ou error")]
+        [Option("--v|--verbosity", Description = "Define o nível da verbosidade (debug, info, warn ou error")]
         public LogVerbosity Verbosity { get; set; } = LogVerbosity.Info;
 
         protected async virtual Task<int> OnExecuteAsync(CommandLineApplication app, IConsole console)

@@ -9,6 +9,7 @@ namespace JDBot.Domain.Posts
         public DateTime Date { get; set; } = DateTime.Now;
         public string Content { get; set; }
         public PostCategory Category { get; set; }
+        public string Author { get; set; }
 
         /// <summary>
         /// Obtém ou define a data de lançamento do jogo.

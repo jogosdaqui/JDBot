@@ -5,17 +5,31 @@ using System.IO;
 using System;
 using JDBot.Infrastructure.Framework;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace JDBot.Tests.Domain.Posts
 {
     [TestFixture]
     public class PostWriterTest
     {
+        private string jekyllRootFolder;
+        private IResourceClient web;
+        private IFileSystem fs;
+        private PostWriter target;
+
+        [SetUp]
+        public void Setup()
+        {
+            jekyllRootFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "jekyll");
+            web = Substitute.For<IResourceClient>();
+            fs = Substitute.For<IFileSystem>();
+            target = new PostWriter(jekyllRootFolder, web, fs);
+        }
+
+
         [Test]
         public async Task Write_Post_Value()
         {
-            var jekyllRootFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "jekyll");
-            var web = Substitute.For<IResourceClient>();
             var screenshot1 = new ImageResource(new byte[] { 1, 1, 1 }, ".png");
             web.DownloadImageAsync("http://test/screenshot1.png").Returns(screenshot1);
 
@@ -28,9 +42,6 @@ namespace JDBot.Tests.Domain.Posts
             var logo = new ImageResource(new byte[] { 3, 3, 3 }, ".png");
             web.DownloadImageAsync("http://test/screenshot3.png").Returns(logo);
 
-            var fs = Substitute.For<IFileSystem>();
-
-            var target = new PostWriter(jekyllRootFolder, web, fs);
             var post = new Post
             {
                 Title = "Test título",
@@ -40,36 +51,111 @@ namespace JDBot.Tests.Domain.Posts
                 Tags = new string[] { "test-company", "test-tag" },
                 Content = "test content1\ntest content2",
                 Logo = "http://test/screenshot3.png",
-                Screenshots = new string [] { "http://test/screenshot1.png", "http://test/screenshot2.png", "http://test/screenshot3.png" }
+                Screenshots = new string[] { "http://test/screenshot1.png", "http://test/screenshot2.png", "http://test/screenshot3.png" }
             };
 
             var config = new PostConfig { Author = "Test author", IgnoreImagesLowerThanBytes = 3 };
             await target.WriteAsync(post, config);
 
-            var expectedPostFolder = Path.Combine(jekyllRootFolder, "_posts", "2018");
-            fs.Received().CreateDirectory(expectedPostFolder);
+            var expectedName = "test-titulo";
+            AssertFolder(post);
+            AssertContent(
+                post,
+                expectedName,
+                "Test título",
+                "Test author",
+                "Test company",
+                PostCategory.Game,
+                "test-company test-tag",
+                @"test content1
 
-            var expectedPostFilename = Path.Combine(expectedPostFolder, "2018-11-28-test-titulo.md");
-            var expectedPostFileContent = @"---
+test content2");
+            AssertImagesFolder(post, expectedName);
+            AssertScreenshots(post, expectedName, screenshot1, screenshot2);
+            AssertLogo(post, expectedName, logo);
+        }
+
+        [Test]
+        public async Task Write_PostOnlyWithTitleAndDate_Written()
+        {
+            var post = new Post
+            {
+                Title = "Test título",
+                Date = new DateTime(2018, 11, 28)
+            };
+
+            await target.WriteAsync(post);
+
+            var expectedName = "test-titulo";
+
+            AssertFolder(post);
+            AssertContent(
+                post,
+                expectedName,
+                "Test título",
+                "",
+                "",
+                PostCategory.News,
+                "",
+                "");
+            AssertImagesFolder(post, expectedName);
+        } 
+
+        private void AssertFolder(Post post)
+        {
+            string expectedPostFolder = GetExpectedPostFolder(post);
+            fs.Received().CreateDirectory(expectedPostFolder);
+        }
+
+        private void AssertContent(Post post, string expectedName, string expectedTitle, string expectedAuthor, string expectedCompany, PostCategory expectedCategory, string expectedTags, string expectedContent)
+        {
+            var expectedPostFolder = GetExpectedPostFolder(post);
+            var expectedPostFilename = Path.Combine(expectedPostFolder, $"{post.Date:yyyy-MM-dd}-{expectedName}.md");
+            var expectedPostFileContent = $@"---
 published: true
 layout: post
-title: 'Test título'
-author: 'Test author'
-companies: 'Test company'
-categories: Game
-tags: test-company test-tag
+title: '{expectedTitle}'
+author: '{expectedAuthor}'
+companies: '{expectedCompany}'
+categories: {expectedCategory}
+tags: {expectedTags}
 ---
-test content1
-
-test content2";
+{expectedContent}";
 
             fs.Received().WriteFile(expectedPostFilename, expectedPostFileContent);
+        }
 
-            var expectedImagesFolder = Path.Combine(jekyllRootFolder, "assets", "2018", "11", "28", "test-titulo");
+        private void AssertImagesFolder(Post post, string expectedName)
+        {
+            var expectedImagesFolder = GetExpectedImagesFolder(post, expectedName);
             fs.Received().CreateDirectory(expectedImagesFolder);
-            fs.Received().WriteFile(Path.Combine(expectedImagesFolder, "screenshot1.png"), screenshot1.Data);
-            fs.Received().WriteFile(Path.Combine(expectedImagesFolder, "screenshot2.png"), screenshot2.Data);
+        }
+
+        private void AssertScreenshots(Post post, string expectedName, params ImageResource[] screenshots)
+        {
+            var expectedImagesFolder = GetExpectedImagesFolder(post, expectedName);
+            var postScreenshots = post.Screenshots.ToArray();
+
+            for (int i = 0; i < screenshots.Length; i++)
+            {
+                fs.Received().WriteFile(Path.Combine(expectedImagesFolder, Path.GetFileName(postScreenshots[i])), screenshots[i].Data);
+            }
+        }
+
+        private void AssertLogo(Post post, string expectedName, ImageResource logo)
+        {
+            var expectedImagesFolder = GetExpectedImagesFolder(post, expectedName);
             fs.Received().WriteFile(Path.Combine(expectedImagesFolder, "logo.png"), logo.Data);
+        }
+
+        private string GetExpectedPostFolder(Post post)
+        {
+            return Path.Combine(jekyllRootFolder, "_posts", post.Date.Year.ToString());
+        }
+
+        private string GetExpectedImagesFolder(Post post, string expectedName)
+        {
+            return Path.Combine(jekyllRootFolder, "assets", post.Date.Year.ToString(), post.Date.Month.ToString("00"), post.Date.Day.ToString("00"), expectedName);
         }
     }
 }

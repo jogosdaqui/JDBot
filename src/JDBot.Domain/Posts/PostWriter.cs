@@ -19,7 +19,12 @@ namespace JDBot.Domain.Posts
             _fs = fileSystem;
         }
 
-        public async Task WriteAsync(Post post, PostConfig config)
+        public async Task WriteAsync(Post post)
+        {
+            await WriteAsync(post, PostConfig.Empty);
+        }
+
+        public async Task<PostWrittenResult> WriteAsync(Post post, PostConfig config)
         {
             Logger.Info($"Escrevendo o post {post.Title}...");
             Sanitize(post);
@@ -66,6 +71,8 @@ namespace JDBot.Domain.Posts
                 Logger.Debug($"Gravando logo {fileName}...");
                 _fs.WriteFile(fileName, image.Data);
             }
+
+            return new PostWrittenResult(postFileName, imagesFolder);
         }
 
         private void Sanitize(Post post)
@@ -85,7 +92,7 @@ namespace JDBot.Domain.Posts
 
         private static string GetPostContent(Post post, PostConfig config)
         {
-            var content = post.Content.Replace("\n", "\n\n");
+            var content = String.IsNullOrEmpty(post.Content) ? String.Empty : post.Content.Replace("\n", "\n\n");
 
             content = AddVideos(post.Videos, content);
 
