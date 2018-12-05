@@ -1,4 +1,5 @@
 ﻿using JDBot.ConsoleApp.Commands.Posts;
+using JDBot.ConsoleApp.Commands.Sites;
 using McMaster.Extensions.CommandLineUtils;
 
 namespace JDBot.ConsoleApp

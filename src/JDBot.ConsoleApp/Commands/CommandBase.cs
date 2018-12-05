@@ -8,15 +8,10 @@ namespace JDBot.ConsoleApp.Commands
     [Command]
     public abstract class CommandBase
     {
-        [Option("--v", Description = "Define o nível da verbosidade (debug, info, warn ou error")]
-        public LogVerbosity Verbosity { get; set; } = LogVerbosity.Info;
-
-        protected async virtual Task<int> OnExecuteAsync(CommandLineApplication app, IConsole console)
+        public int OnExecute(CommandLineApplication app, IConsole console)
         {
-            Logger.Initialize(new ConsoleLogger(), Verbosity);
-   
-            return await Task.Run(() => 0);
+            app.ShowHelp();
+            return 1;
         }
-
     }
 }
