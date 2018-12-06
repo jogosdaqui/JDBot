@@ -54,7 +54,7 @@ namespace JDBot.Infrastructure.Drawing
                     if (!HasTranparency(image))
                         result.Extension = ".jpg";
 
-                    var encoder = _encoders[result.Extension];
+                    var encoder = _encoders.ContainsKey(result.Extension) ? _encoders[result.Extension] : _encoders[".jpg"];
 
                     using (var ms = new MemoryStream())
                     {

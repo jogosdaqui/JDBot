@@ -58,7 +58,7 @@
       "responses": [ "rpg" ]
     },
     {
-      "pattern": "estilo runner",
+      "pattern": "(estilo runner|nesse runner)",
       "responses": [ "runner" ]
     },
     { 

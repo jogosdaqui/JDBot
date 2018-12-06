@@ -18,10 +18,10 @@ namespace JDBot.Domain.Posts
         /// Apenas para posts da categoryia Game.
         /// </remarks>
         public DateTime? ReleaseDate { get; set; }
-        public IEnumerable<string> Companies { get; set; }
-        public IEnumerable<string> Tags { get; set; }
+        public IList<string> Companies { get; set; }
+        public IList<string> Tags { get; set; }
         public string Logo { get; set; }
-        public IEnumerable<string> Screenshots { get; set; }
-        public IEnumerable<Video> Videos { get; set; }
+        public IList<string> Screenshots { get; set; }
+        public IList<Video> Videos { get; set; }
     }
 }

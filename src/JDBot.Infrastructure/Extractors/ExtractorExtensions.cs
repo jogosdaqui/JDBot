@@ -87,7 +87,7 @@ namespace JDBot.Infrastructure.Extractors
                     videos.Add(new Video { Id = idMatch.Groups["id"].Value, Kind = VideoKind.Vimeo });
             }
 
-            var youtubes = doc.QuerySelectorAll("a[href*='://www.youtube.com/'],iframe[src*='://www.youtube.com/']");
+            var youtubes = doc.QuerySelectorAll("a[href*='://www.youtube.com/'],iframe[src*='://www.youtube.com/'],[data-trailer-url*='://www.youtube.com/']");
 
             foreach (var link in youtubes)
             {
@@ -135,14 +135,16 @@ namespace JDBot.Infrastructure.Extractors
             return logo == null ? null : AddBaseUrl(baseUrl, logo.Attributes["src"].Value);
         }
 
-        public static IEnumerable<string> GetScreenshots(this IDocument doc, string selector, string baseUrl = null)
+        public static IList<string> GetScreenshots(this IDocument doc, string selector, string baseUrl = null)
         {
             return doc.GetScreenshots(doc.QuerySelectorAll(selector), baseUrl);
         }
 
-        public static IEnumerable<string> GetScreenshots(this IDocument doc, IHtmlCollection<IElement> screenshotsElements, string baseUrl = null)
+        public static IList<string> GetScreenshots(this IDocument doc, IHtmlCollection<IElement> screenshotsElements, string baseUrl = null)
         {
-            return screenshotsElements.Select(s => AddBaseUrl(baseUrl, _removeSizeFromImageUrlRegex.Replace(s.Attributes["src"].Value, "")));
+            return screenshotsElements
+            .Select(s => AddBaseUrl(baseUrl, _removeSizeFromImageUrlRegex.Replace(s.Attributes["src"].Value, "")))
+            .ToArray();
         }
 
         private static string AddBaseUrl(this string baseUrl, string relativeUrl)

@@ -22,6 +22,7 @@ namespace JDBot.Application
                 new WordPressPostExtractor(),
                 new DoPresskitVariant1PostExtractor(),
                 new DoPresskitVariant2PostExtractor(),
+                new GooglePlayPostExtractor(),
                 new GenericPostExtractor()
             };
 

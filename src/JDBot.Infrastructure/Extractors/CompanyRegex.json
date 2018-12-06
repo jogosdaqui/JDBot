@@ -15,6 +15,10 @@
     {
       "pattern": "Developer: (?<name>.+);",
       "tags": [ "text" ]
+    },
+    {
+      "pattern": "oferecido por(?<name>.+)DesenvolvedorAcesse",
+      "tags": [ "text" ]
     }
   ]
 }

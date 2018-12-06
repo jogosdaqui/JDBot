@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using AngleSharp.Dom;
 using JDBot.Domain.Posts;
 
 namespace JDBot.Infrastructure.Extractors
