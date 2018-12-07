@@ -18,6 +18,9 @@ namespace JDBot.ConsoleApp.Commands.Sites
         [Option("--message", Description = "A mensagem que será utilizada na tag/release.")]
         public string Message { get; set; }
 
+        [Option("--patch", Description = "Se um patch, uma correção da última release.")]
+        public bool Patch { get; set; }
+
         protected override async Task<int> OnExecuteAsync(CommandLineApplication app, IConsole console)
         {
             await base.OnExecuteAsync(app, console);
@@ -34,7 +37,7 @@ namespace JDBot.ConsoleApp.Commands.Sites
             var gitFlow = new GitFlowProxy();
             var releaser = new SiteReleaser(RepoFolder, fs, gitHub, git, gitFlow);
 
-            var version = await releaser.ReleaseAsync(Message);
+            var version = await releaser.ReleaseAsync(Message, Patch);
 
             Logger.Info($"Versão: {version} liberada no master do GitHub.");
            

@@ -20,10 +20,14 @@ namespace JDBot.Domain.Sites
             _gitFlow = gitFlow;
         }
 
-        public async Task<SemanticVersioning> ReleaseAsync(string message)
+        public async Task<SemanticVersioning> ReleaseAsync(string message, bool isPatch = false)
         {
             var releaseVersion = await _gitHub.GetLatestReleaseAsync();
-            releaseVersion.Minor++;
+
+            if (isPatch)
+                releaseVersion.Patch++;
+            else
+                releaseVersion.Minor++;
 
             _fs.ChangeCurrentDirectory(_jekyllRepositoryRootFolder);
             _gitFlow.StartRelease(releaseVersion);
