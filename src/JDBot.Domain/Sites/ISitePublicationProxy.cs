@@ -2,7 +2,7 @@
 
 namespace JDBot.Domain.Sites
 {
-    public interface ISitePublisher
+    public interface ISitePublicationProxy
     {
         Task PublishAsync();
         Task<PublicationStatus> GetPublicationStatusAsync();

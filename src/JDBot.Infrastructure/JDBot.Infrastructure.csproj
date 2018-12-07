@@ -14,6 +14,7 @@
     <Folder Include="Logging\" />
     <Folder Include="Drawing\" />
     <Folder Include="Texts\" />
+    <Folder Include="Git\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\JDBot.Domain\JDBot.Domain.csproj" />
@@ -24,6 +25,7 @@
     <PackageReference Include="SixLabors.ImageSharp" Version="1.0.0-beta0005" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
     <PackageReference Include="Microsoft.AspNet.WebApi.Client" Version="5.2.7" />
+    <PackageReference Include="Octokit" Version="0.32.0" />
   </ItemGroup>
   <ItemGroup>
     <None Update="Extractors\CompanyRegex.txt">

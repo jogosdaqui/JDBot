@@ -9,15 +9,15 @@ namespace JDBot.Tests.Infrastructure.Net
 {
     [TestFixture]
     [Ignore("Rodar somente quando necessário, muito demorado e acaba fazendo builds no AppVeyor.")]
-    public class AppVeyorSitePublisherTest
+    public class AppVeyorSitePublicationProxyTest
     {
-        private AppVeyorSitePublisher _target;
+        private AppVeyorSitePublicationProxy _target;
 
         [OneTimeSetUp]
         public void Setup()
         {
             var apiKey = Environment.GetEnvironmentVariable("APPVEYOR_APIKEY");
-            _target = new AppVeyorSitePublisher(apiKey);
+            _target = new AppVeyorSitePublicationProxy(apiKey);
         }
 
         [Test]

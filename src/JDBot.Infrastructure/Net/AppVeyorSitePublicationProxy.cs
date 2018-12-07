@@ -1,21 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Net.Http;
-using System.Net.Http.Formatting;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using JDBot.Domain.Sites;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 namespace JDBot.Infrastructure.Net
 {
-    public class AppVeyorSitePublisher : ISitePublisher
+    public class AppVeyorSitePublicationProxy : ISitePublicationProxy
     {
         private static readonly string _apiUrl = "https://ci.appveyor.com/api/";
         private readonly string _apiKey;
 
-        public AppVeyorSitePublisher(string apiKey)
+        public AppVeyorSitePublicationProxy(string apiKey)
         {
             _apiKey = apiKey;
         }

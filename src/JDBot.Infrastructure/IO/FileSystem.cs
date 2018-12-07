@@ -1,10 +1,16 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using JDBot.Infrastructure.Framework;
 
 namespace JDBot.Infrastructure.IO
 {
     public class FileSystem : IFileSystem
     {
+        public void ChangeCurrentDirectory(string path)
+        {
+            Environment.CurrentDirectory = path;
+        }
+
         public void CreateDirectory(string path)
         {
             Directory.CreateDirectory(path);
@@ -19,5 +25,6 @@ namespace JDBot.Infrastructure.IO
         {
             File.WriteAllBytes(filename, data);
         }
+        
     }
 }

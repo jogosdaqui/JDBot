@@ -8,7 +8,7 @@ using McMaster.Extensions.CommandLineUtils;
 
 namespace JDBot.ConsoleApp.Commands.Sites
 {
-    [Command(Name = "public", Description = "Realiza operações em relação a publicação.")]
+    [Command(Name = "publish", Description = "Realiza operações em relação a publicação.")]
     public class PublishSubcommand : SubCommandBase
     {
         [Option("--apikey", Description = "A API Key para o AppVeyor. Pode ser definida diretamente no comando ou através da variável de ambiente JDBOT_APPVEYOR_APIKEY")]
@@ -30,20 +30,20 @@ namespace JDBot.ConsoleApp.Commands.Sites
                 return 1;
             }
 
-            var publisher = new AppVeyorSitePublisher(ApiKey);
-            var site = new Site(publisher);
+            var proxy = new AppVeyorSitePublicationProxy(ApiKey);
+            var publisher = new SitePublisher(proxy);
 
             if (Update)
             {
                 Logger.Info("Iniciando a publicação...");
-                await site.PublishAsync();
+                await publisher.PublishAsync();
                 Logger.Info($"Publicação agendada no AppVeyor. Em minutos o site estará atualizado.");
                 return 0;
             }
             else if (Status)
             {
                 Logger.Info("Consultando o status...");
-                var status = await site.GetLatestPublicationStatus();
+                var status = await publisher.GetLatestPublicationStatus();
                 Logger.Info($"Status: {status}");
                 return 0;
             }

@@ -7,5 +7,6 @@ namespace JDBot.Infrastructure.Framework
         void WriteFile(string filename, string content);
         void WriteFile(string filename, byte[] data);
         void CreateDirectory(string path);
+        void ChangeCurrentDirectory(string path);
     }
 }

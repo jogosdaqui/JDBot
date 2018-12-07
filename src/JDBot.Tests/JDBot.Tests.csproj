@@ -14,6 +14,8 @@
     <Folder Include="Infrastructure\Drawing\" />
     <Folder Include="Infrastructure\Texts\" />
     <Folder Include="Infrastructure\Net\" />
+    <Folder Include="Infrastructure\Git\" />
+    <Folder Include="Domain\Sites\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="NUnit" Version="3.11.0" />
