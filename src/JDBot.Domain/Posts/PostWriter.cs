@@ -24,10 +24,12 @@ namespace JDBot.Domain.Posts
             await WriteAsync(post, PostConfig.Empty);
         }
 
-        public async Task<PostWrittenResult> WriteAsync(Post post, PostConfig config)
+        public async Task<PostInfo> WriteAsync(Post post, PostConfig config)
         {
             Logger.Info($"Escrevendo o post {post.Title}...");
             Sanitize(post);
+
+            var result = new PostInfo(post.Title, post.Date);
 
             var content = GetPostContent(post, config);
             var postName = GetPostName(post);
@@ -72,7 +74,21 @@ namespace JDBot.Domain.Posts
                 _fs.WriteFile(fileName, image.Data);
             }
 
-            return new PostWrittenResult(postFileName, imagesFolder);
+            return result;
+        }
+
+        public async Task<PostInfo> RenameAsync(PostInfo oldPost, PostInfo newPost)
+        {
+            if (!_fs.ExistsFile(oldPost.FileName) || !_fs.ExistsDirectory(oldPost.ImagesFolder))
+                throw new ArgumentException(nameof(oldPost));
+
+            if (_fs.ExistsFile(newPost.FileName) || _fs.ExistsDirectory(newPost.ImagesFolder))
+                throw new ArgumentException(nameof(newPost));
+
+            _fs.MoveFile(oldPost.FileName, newPost.FileName);
+            _fs.MoveFile(oldPost.ImagesFolder, newPost.ImagesFolder);
+        
+            return await Task.Run(() => newPost);
         }
 
         private void Sanitize(Post post)

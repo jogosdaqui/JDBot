@@ -34,19 +34,24 @@ namespace JDBot.Application
             _writer = new PostWriter(jekyllRootFolder, resourceClient, fs);
         }
 
-        public async Task<PostWrittenResult> WritePostAsync(string sourcePostUrl, PostConfig config)
+        public async Task<PostInfo> WritePostAsync(string sourcePostUrl, PostConfig config)
         {
             var post = await _reader.ReadAsync(sourcePostUrl);
 
             if(post != null)
                 return await _writer.WriteAsync(post, config);
 
-            return PostWrittenResult.Empty;
+            return PostInfo.Empty;
         }
 
-        public async Task<PostWrittenResult> WritePostAsync(Post post)
+        public async Task<PostInfo> WritePostAsync(Post post)
         {
             return await _writer.WriteAsync(post, PostConfig.Empty);
+        }
+
+        public async Task<PostInfo> RenamePostAsync(PostInfo oldPost, PostInfo newPost)
+        {
+            return await _writer.RenameAsync(oldPost, newPost);
         }
     }
 }

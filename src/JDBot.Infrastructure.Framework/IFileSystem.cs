@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace JDBot.Infrastructure.Framework
+﻿namespace JDBot.Infrastructure.Framework
 {
     public interface IFileSystem
     {
@@ -8,5 +6,9 @@ namespace JDBot.Infrastructure.Framework
         void WriteFile(string filename, byte[] data);
         void CreateDirectory(string path);
         void ChangeCurrentDirectory(string path);
+        void MoveFile(string oldFilename, string newFilename);
+        void MoveDirectory(string oldDirectory, string newDirectory);
+        bool ExistsFile(string filename);
+        bool ExistsDirectory(string directory);
     }
 }

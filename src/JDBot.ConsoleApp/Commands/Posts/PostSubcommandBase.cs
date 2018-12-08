@@ -25,7 +25,7 @@ namespace JDBot.ConsoleApp.Commands
             return 0;
         }
 
-        protected void OpenPostForEdit(params PostWrittenResult[] results)
+        protected void OpenPostForEdit(params PostInfo[] results)
         {
             foreach (var result in results)
             {

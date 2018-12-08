@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using JDBot.Infrastructure.Git;
 using NUnit.Framework;
 
@@ -13,7 +12,9 @@ namespace JDBot.Tests.Infrastructure.Git
         {
             var target = new GitHubProxy();
             var actual = await target.GetLatestReleaseAsync();
-            Assert.AreEqual("1.9.0", actual.ToString());
+            Assert.GreaterOrEqual(actual.Major, 1);
+            Assert.GreaterOrEqual(actual.Minor, 11);
+            Assert.GreaterOrEqual(actual.Patch, 0);
         }
     }
 }

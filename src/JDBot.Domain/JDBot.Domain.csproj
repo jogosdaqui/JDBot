@@ -11,6 +11,7 @@
   <ItemGroup>
     <Compile Remove="Posts\EmptyEnumeration.cs" />
     <Compile Remove="Common\ICrawler.cs" />
+    <Compile Remove="Posts\PostWrittenResult.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\JDBot.Infrastructure.Framework\JDBot.Infrastructure.Framework.csproj" />

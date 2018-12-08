@@ -16,6 +16,26 @@ namespace JDBot.Infrastructure.IO
             Directory.CreateDirectory(path);
         }
 
+        public bool ExistsDirectory(string directory)
+        {
+            return Directory.Exists(directory);
+        }
+
+        public bool ExistsFile(string filename)
+        {
+            return File.Exists(filename);
+        }
+
+        public void MoveDirectory(string oldDirectory, string newDirectory)
+        {
+            Directory.Move(oldDirectory, newDirectory);
+        }
+
+        public void MoveFile(string oldFilename, string newFilename)
+        {
+            File.Move(oldFilename, newFilename);
+        }
+
         public void WriteFile(string filename, string content)
         {
             File.WriteAllText(filename, content);
