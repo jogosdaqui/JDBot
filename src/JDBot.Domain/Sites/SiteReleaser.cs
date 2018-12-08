@@ -27,7 +27,10 @@ namespace JDBot.Domain.Sites
             if (isPatch)
                 releaseVersion.Patch++;
             else
+            {
                 releaseVersion.Minor++;
+                releaseVersion.Patch = 0;
+            }
 
             _fs.ChangeCurrentDirectory(_jekyllRepositoryRootFolder);
             _gitFlow.StartRelease(releaseVersion);
