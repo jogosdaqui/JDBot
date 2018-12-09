@@ -79,14 +79,23 @@ namespace JDBot.Domain.Posts
 
         public async Task<PostInfo> RenameAsync(PostInfo oldPost, PostInfo newPost)
         {
-            if (!_fs.ExistsFile(oldPost.FileName) || !_fs.ExistsDirectory(oldPost.ImagesFolder))
-                throw new ArgumentException(nameof(oldPost));
+            oldPost = new PostInfo(_jekyllRootFolder, oldPost.Title, oldPost.Date);
+            newPost = new PostInfo(_jekyllRootFolder, newPost.Title, newPost.Date);
 
-            if (_fs.ExistsFile(newPost.FileName) || _fs.ExistsDirectory(newPost.ImagesFolder))
-                throw new ArgumentException(nameof(newPost));
+            if (!_fs.ExistsFile(oldPost.FileName))
+                throw new ArgumentException(nameof(oldPost), $"O arquivo antigo do post não existe: {oldPost.FileName}");
+
+            if (!_fs.ExistsDirectory(oldPost.ImagesFolder))
+                throw new ArgumentException(nameof(oldPost), $"A pasta de imagens antiga do post não existe: {oldPost.ImagesFolder}");
+
+            if (_fs.ExistsFile(newPost.FileName))
+                throw new ArgumentException(nameof(newPost), $"O arquivo do novo post já existe: {newPost.FileName}");
+
+            if (_fs.ExistsDirectory(newPost.ImagesFolder))
+                throw new ArgumentException(nameof(newPost), $"A pasta de imagens do novo post já existe: {newPost.ImagesFolder}");
 
             _fs.MoveFile(oldPost.FileName, newPost.FileName);
-            _fs.MoveFile(oldPost.ImagesFolder, newPost.ImagesFolder);
+            _fs.MoveDirectory(oldPost.ImagesFolder, newPost.ImagesFolder);
         
             return await Task.Run(() => newPost);
         }

@@ -9,6 +9,7 @@ namespace JDBot.ConsoleApp.Commands
     public abstract class SubCommandBase
     {
         [Option("--v|--verbosity", Description = "Define o nível da verbosidade (debug, info, warn ou error")]
+        [AllowedValues("debug", "info", "warn", "error", IgnoreCase = true)]
         public LogVerbosity Verbosity { get; set; } = LogVerbosity.Info;
 
         protected async virtual Task<int> OnExecuteAsync(CommandLineApplication app, IConsole console)

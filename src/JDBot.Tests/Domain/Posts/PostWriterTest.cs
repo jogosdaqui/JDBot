@@ -169,17 +169,19 @@ test content2");
             var oldPost = new PostInfo("old-post", new DateTime(2018, 12, 8));
             var newPost = new PostInfo("new-post", new DateTime(2019, 11, 7));
 
-            _fs.ExistsFile(oldPost.FileName).Returns(true);
-            _fs.ExistsDirectory(oldPost.ImagesFolder).Returns(true);
-            _fs.ExistsFile(newPost.FileName).Returns(false);
-            _fs.ExistsDirectory(newPost.ImagesFolder).Returns(false);
-            _fs.MoveFile(oldPost.FileName, newPost.FileName);
-            _fs.MoveDirectory(oldPost.ImagesFolder, newPost.ImagesFolder);
-
+            _fs.ExistsFile(Path.Combine(_jekyllRootFolder, oldPost.FileName)).Returns(true);
+            _fs.ExistsDirectory(Path.Combine(_jekyllRootFolder, oldPost.ImagesFolder)).Returns(true);
+            _fs.ExistsFile(Path.Combine(_jekyllRootFolder, newPost.FileName)).Returns(false);
+            _fs.ExistsDirectory(Path.Combine(_jekyllRootFolder, newPost.ImagesFolder)).Returns(false);
+           
             var actual = await _target.RenameAsync(oldPost, newPost);
 
-            Assert.AreEqual(newPost.FileName, actual.FileName);
-            Assert.AreEqual(newPost.ImagesFolder, actual.ImagesFolder);
+            var expected = new PostInfo(_jekyllRootFolder, newPost.Title, newPost.Date);
+            Assert.AreEqual(expected.FileName, actual.FileName);
+            Assert.AreEqual(expected.ImagesFolder, actual.ImagesFolder);
+
+            _fs.Received().MoveFile(Path.Combine(_jekyllRootFolder, oldPost.FileName), Path.Combine(_jekyllRootFolder, newPost.FileName));
+            _fs.Received().MoveDirectory(Path.Combine(_jekyllRootFolder, oldPost.ImagesFolder), Path.Combine(_jekyllRootFolder, newPost.ImagesFolder));
         }
 
         #region Helpers
