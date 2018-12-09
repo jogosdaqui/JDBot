@@ -29,22 +29,20 @@ namespace JDBot.Domain.Posts
             Logger.Info($"Escrevendo o post {post.Title}...");
             Sanitize(post);
 
-            var result = new PostInfo(post.Title, post.Date);
-
+            var postInfo = new PostInfo(_jekyllRootFolder, post.Title, post.Date);
             var content = GetPostContent(post, config);
             var postName = GetPostName(post);
             var date = config.Date ?? post.Date;
 
             Logger.Debug($"Criando a pasta do post...");
-            var postFolder = Path.Combine(_jekyllRootFolder, "_posts", date.Year.ToString());
+            var postFolder = Path.GetDirectoryName(postInfo.FileName);
             _fs.CreateDirectory(postFolder);
 
             Logger.Debug($"Escrevendo o arquivo do post...");
-            var postFileName = Path.Combine(postFolder, $"{date.Year}-{date.Month:00}-{date.Day:00}-{postName}.md");
-            _fs.WriteFile(postFileName, content);
+            _fs.WriteFile(postInfo.FileName, content);
 
             Logger.Debug($"Criando a pasta de imagens do post....");
-            var imagesFolder = Path.Combine(_jekyllRootFolder, "assets", date.Year.ToString(), date.Month.ToString("00"), date.Day.ToString("00"), postName);
+            var imagesFolder = postInfo.ImagesFolder;
             _fs.CreateDirectory(imagesFolder);
 
             Logger.Debug($"Realizando o download das imagens e gravando na pasta...");
@@ -74,7 +72,7 @@ namespace JDBot.Domain.Posts
                 _fs.WriteFile(fileName, image.Data);
             }
 
-            return result;
+            return postInfo;
         }
 
         public async Task<PostInfo> RenameAsync(PostInfo oldPost, PostInfo newPost)

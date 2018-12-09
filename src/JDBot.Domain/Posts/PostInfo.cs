@@ -37,6 +37,11 @@ namespace JDBot.Domain.Posts
         public string FileName { get; }
         public string ImagesFolder { get; }
 
+        public static PostInfo From(Post post, string jekyllRootFolder)
+        {
+            return new PostInfo(jekyllRootFolder, post.Title, post.Date);
+        }
+
         private static string GetPostName(string title)
         {
             return title

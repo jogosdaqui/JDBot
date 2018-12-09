@@ -234,12 +234,13 @@ tags: {expectedTags}
 
         private string GetExpectedPostFolder(Post post)
         {
-            return Path.Combine(_jekyllRootFolder, "_posts", post.Date.Year.ToString());
+            return Path.GetDirectoryName(PostInfo.From(post, _jekyllRootFolder).FileName);
         }
 
         private string GetExpectedImagesFolder(Post post, string expectedName)
         {
-            return Path.Combine(_jekyllRootFolder, "assets", post.Date.Year.ToString(), post.Date.Month.ToString("00"), post.Date.Day.ToString("00"), expectedName);
+            var root = Path.GetDirectoryName(PostInfo.From(post, _jekyllRootFolder).ImagesFolder);
+            return Path.Combine(root, expectedName);
         }
         #endregion
     }

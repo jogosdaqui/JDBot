@@ -1,7 +1,4 @@
-﻿using System.Threading.Tasks;
-using JDBot.Infrastructure.Framework;
-using JDBot.Infrastructure.Logging;
-using McMaster.Extensions.CommandLineUtils;
+﻿using McMaster.Extensions.CommandLineUtils;
 
 namespace JDBot.ConsoleApp.Commands
 {
