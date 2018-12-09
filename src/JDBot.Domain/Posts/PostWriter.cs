@@ -24,25 +24,25 @@ namespace JDBot.Domain.Posts
             await WriteAsync(post, PostConfig.Empty);
         }
 
-        public async Task<PostWrittenResult> WriteAsync(Post post, PostConfig config)
+        public async Task<PostInfo> WriteAsync(Post post, PostConfig config)
         {
             Logger.Info($"Escrevendo o post {post.Title}...");
             Sanitize(post);
 
+            var postInfo = new PostInfo(_jekyllRootFolder, post.Title, post.Date);
             var content = GetPostContent(post, config);
             var postName = GetPostName(post);
             var date = config.Date ?? post.Date;
 
             Logger.Debug($"Criando a pasta do post...");
-            var postFolder = Path.Combine(_jekyllRootFolder, "_posts", date.Year.ToString());
+            var postFolder = Path.GetDirectoryName(postInfo.FileName);
             _fs.CreateDirectory(postFolder);
 
             Logger.Debug($"Escrevendo o arquivo do post...");
-            var postFileName = Path.Combine(postFolder, $"{date.Year}-{date.Month:00}-{date.Day:00}-{postName}.md");
-            _fs.WriteFile(postFileName, content);
+            _fs.WriteFile(postInfo.FileName, content);
 
             Logger.Debug($"Criando a pasta de imagens do post....");
-            var imagesFolder = Path.Combine(_jekyllRootFolder, "assets", date.Year.ToString(), date.Month.ToString("00"), date.Day.ToString("00"), postName);
+            var imagesFolder = postInfo.ImagesFolder;
             _fs.CreateDirectory(imagesFolder);
 
             Logger.Debug($"Realizando o download das imagens e gravando na pasta...");
@@ -72,7 +72,30 @@ namespace JDBot.Domain.Posts
                 _fs.WriteFile(fileName, image.Data);
             }
 
-            return new PostWrittenResult(postFileName, imagesFolder);
+            return postInfo;
+        }
+
+        public async Task<PostInfo> RenameAsync(PostInfo oldPost, PostInfo newPost)
+        {
+            oldPost = new PostInfo(_jekyllRootFolder, oldPost.Title, oldPost.Date);
+            newPost = new PostInfo(_jekyllRootFolder, newPost.Title, newPost.Date);
+
+            if (!_fs.ExistsFile(oldPost.FileName))
+                throw new ArgumentException(nameof(oldPost), $"O arquivo antigo do post não existe: {oldPost.FileName}");
+
+            if (!_fs.ExistsDirectory(oldPost.ImagesFolder))
+                throw new ArgumentException(nameof(oldPost), $"A pasta de imagens antiga do post não existe: {oldPost.ImagesFolder}");
+
+            if (_fs.ExistsFile(newPost.FileName))
+                throw new ArgumentException(nameof(newPost), $"O arquivo do novo post já existe: {newPost.FileName}");
+
+            if (_fs.ExistsDirectory(newPost.ImagesFolder))
+                throw new ArgumentException(nameof(newPost), $"A pasta de imagens do novo post já existe: {newPost.ImagesFolder}");
+
+            _fs.MoveFile(oldPost.FileName, newPost.FileName);
+            _fs.MoveDirectory(oldPost.ImagesFolder, newPost.ImagesFolder);
+        
+            return await Task.Run(() => newPost);
         }
 
         private void Sanitize(Post post)

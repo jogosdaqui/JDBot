@@ -54,15 +54,15 @@ namespace JDBot.ConsoleApp.Commands.Posts
             return 0;
         }
 
-        private async Task<PostWrittenResult> RunWithArguments(string url, string jekyllRootFolder, DateTime date, string author)
+        private async Task<PostInfo> RunWithArguments(string url, string jekyllRootFolder, DateTime date, string author)
         {
             var postService = new PostService(jekyllRootFolder);
             return await postService.WritePostAsync(url, new PostConfig { Author = author, Date = date });
         }
 
-        private async Task<PostWrittenResult[]> RunWithUrlFile(string file)
+        private async Task<PostInfo[]> RunWithUrlFile(string file)
         {
-            var results = new List<PostWrittenResult>();
+            var results = new List<PostInfo>();
             var urlFile = UrlFileParser.Parse(file);
             var postService = new PostService(urlFile.JekyllRootFolder);
 
