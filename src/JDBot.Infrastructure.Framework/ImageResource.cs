@@ -1,8 +1,15 @@
-﻿namespace JDBot.Infrastructure.Framework
+﻿using System.IO;
+
+namespace JDBot.Infrastructure.Framework
 {
     public class ImageResource
     {
         public ImageResource() { }
+
+        public ImageResource(string filename)
+            : this(File.ReadAllBytes(filename), Path.GetExtension(filename))
+        {
+         }
 
         public ImageResource(byte[] data)
         {

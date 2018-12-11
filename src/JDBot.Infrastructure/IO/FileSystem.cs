@@ -45,6 +45,10 @@ namespace JDBot.Infrastructure.IO
         {
             File.WriteAllBytes(filename, data);
         }
-        
+
+        public static string GetOutputPath(params string[] paths)
+        {
+            return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, Path.Combine(paths));
+        }
     }
 }

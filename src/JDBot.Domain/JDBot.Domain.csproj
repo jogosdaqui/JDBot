@@ -7,6 +7,7 @@
   <ItemGroup>
     <Folder Include="Posts\" />
     <Folder Include="Sites\" />
+    <Folder Include="Videos\" />
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="Posts\EmptyEnumeration.cs" />
