@@ -28,6 +28,11 @@ namespace JDBot.Infrastructure.IO
 
         public void MoveDirectory(string oldDirectory, string newDirectory)
         {
+            var previousDirectory = Path.GetDirectoryName(newDirectory);
+
+            if(!Directory.Exists(previousDirectory))
+                Directory.CreateDirectory(previousDirectory);
+
             Directory.Move(oldDirectory, newDirectory);
         }
 
