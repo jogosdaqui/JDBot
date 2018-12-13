@@ -76,5 +76,24 @@ namespace JDBot.Tests.Infrastructure.Extractors
             var actual = await target.ExtractAsync("http://www.deadmushroom.com.br/?portfolio=amazing-spider-attack");
             Assert.IsFalse(string.IsNullOrEmpty(actual.Logo));
         }
+
+        [Test]
+        public async Task Extract_Url5_Post()
+        {
+            var target = new GenericPostExtractor();
+            var actual = await target.ExtractAsync("http://www.invent4.com/rats/index-p.htm");
+             Assert.AreEqual("http://www.invent4.com/rats/logo-preto.gif", actual.Logo);
+
+            StringAssert.Contains("Quando os ratos", actual.Content);
+
+            var actualScreenshots = actual.Screenshots.ToArray();
+            Assert.AreEqual(34, actualScreenshots.Length);
+
+            var actualVideos = actual.Videos.ToArray();
+            Assert.AreEqual(3, actualVideos.Length);
+            Assert.AreEqual("IAu4oJzzNDI", actualVideos[0].Id);
+            Assert.AreEqual("WNj67cSF_zg", actualVideos[1].Id);
+            Assert.AreEqual("P21xzCgtfCQ", actualVideos[2].Id);
+        }
     }
 }

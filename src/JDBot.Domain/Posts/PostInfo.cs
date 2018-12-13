@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using JDBot.Infrastructure.Framework;
 
 namespace JDBot.Domain.Posts
 {
@@ -20,7 +19,7 @@ namespace JDBot.Domain.Posts
 
             Title = title;
             Date = date;
-            var postName = GetPostName(title);
+            var postName = title.GetWritetablePostName();
 
             jekyllRootFolder = jekyllRootFolder ?? String.Empty;
             FileName = Path.Combine(jekyllRootFolder, "_posts", date.Year.ToString(), $"{date.Year}-{date.Month:00}-{date.Day:00}-{postName}.md");
@@ -40,19 +39,6 @@ namespace JDBot.Domain.Posts
         public static PostInfo From(Post post, string jekyllRootFolder)
         {
             return new PostInfo(jekyllRootFolder, post.Title, post.Date);
-        }
-
-        private static string GetPostName(string title)
-        {
-            return title
-                       .ToLowerInvariant()
-                       .Replace(" ", "-")
-                       .Replace(":", "-")
-                       .Replace("–", String.Empty)
-                       .Replace("--", "-")
-                       .Replace("'", String.Empty)
-                       .RemoveDiacritics();
-
         }
     }
 }

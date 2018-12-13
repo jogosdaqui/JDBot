@@ -29,10 +29,10 @@ namespace JDBot.Domain.Posts
             Logger.Info($"Escrevendo o post {post.Title}...");
             Sanitize(post);
 
-            var postInfo = new PostInfo(_jekyllRootFolder, post.Title, post.Date);
-            var content = GetPostContent(post, config);
-            var postName = GetPostName(post);
             var date = config.Date ?? post.Date;
+            var postInfo = new PostInfo(_jekyllRootFolder, post.Title, date);
+            var content = GetPostContent(post, config);
+            var postName = post.GetWritableName();
 
             Logger.Debug($"Criando a pasta do post...");
             var postFolder = Path.GetDirectoryName(postInfo.FileName);
@@ -93,8 +93,17 @@ namespace JDBot.Domain.Posts
                 throw new ArgumentException(nameof(newPost), $"A pasta de imagens do novo post já existe: {newPost.ImagesFolder}");
 
             _fs.MoveFile(oldPost.FileName, newPost.FileName);
-            _fs.MoveDirectory(oldPost.ImagesFolder, newPost.ImagesFolder);
-        
+
+            try
+            {
+                _fs.MoveDirectory(oldPost.ImagesFolder, newPost.ImagesFolder);
+            }
+            catch
+            {
+                _fs.MoveFile(newPost.FileName, oldPost.FileName);
+                throw;
+            }
+
             return await Task.Run(() => newPost);
         }
 
@@ -122,7 +131,7 @@ namespace JDBot.Domain.Posts
             return $@"---
 published: true
 layout: post
-title: '{GetPostTitle(post.Title)}'
+title: '{post.GetWritableTitle()}'
 author: '{config.Author}'
 companies: '{String.Join(" ", post.Companies)}'
 categories: {post.Category}
@@ -137,24 +146,6 @@ tags: {String.Join(" ", post.Tags)}
                 content += $"\n\n{{% {video.Kind.ToString().ToLowerInvariant()} {video.Id} %}}";
 
             return content;
-        }
-
-        private static object GetPostTitle(string title)
-        {
-            return title.Replace("'", "&#39;");
-        }
-
-        private static string GetPostName(Post post)
-        {
-            return post.Title
-                       .ToLowerInvariant()
-                       .Replace(" ", "-")
-                       .Replace(":", "-")
-                       .Replace("–", String.Empty)
-                       .Replace("--", "-")
-                       .Replace("'", String.Empty)
-                       .RemoveDiacritics();
-                
         }
     }
 }

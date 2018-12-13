@@ -32,7 +32,7 @@ namespace JDBot.Tests.Infrastructure.IO
             item = items[2];
             Assert.AreEqual("http://www.monsterbed.com.br/games/laco-macanudo-gaucho/", item.Url);
             Assert.AreEqual("autor3", item.Config.Author);
-            Assert.AreEqual(new DateTime(2018, 11, 30), item.Config.Date);
+            Assert.AreEqual(new DateTime(2018, 12, 15), item.Config.Date);
         }
     }
 }

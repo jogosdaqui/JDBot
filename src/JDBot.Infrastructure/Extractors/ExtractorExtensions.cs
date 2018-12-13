@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -14,7 +15,7 @@ namespace JDBot.Infrastructure.Extractors
     public static class ExtractorExtensions
     {
         private static readonly Regex _getVimeoIdRegex = new Regex(@"vimeo.com/video/(?<id>\d+)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-        private static readonly Regex _getYoutubeIdRegex = new Regex(@"https*://www.youtube.com/(watch\?v=|embed/)(?<id>[a-z0-9\-_]+)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex _getYoutubeIdRegex = new Regex(@"https*://www.youtube.com/(watch\?v=|embed/|v/)(?<id>[a-z0-9\-_]+)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
         private static readonly Regex _removeSizeFromImageUrlRegex = new Regex(@"\-\d+x\d+", RegexOptions.Compiled);
         private static readonly Regex _removePageRegex = new Regex(@"(?<baseUrl>.+)/.+\.(html|htm|php|aspx)$", RegexOptions.Compiled);
 
@@ -87,7 +88,7 @@ namespace JDBot.Infrastructure.Extractors
                     videos.Add(new Video { Id = idMatch.Groups["id"].Value, Kind = VideoKind.Vimeo });
             }
 
-            var youtubes = doc.QuerySelectorAll("a[href*='://www.youtube.com/'],iframe[src*='://www.youtube.com/'],[data-trailer-url*='://www.youtube.com/']");
+            var youtubes = doc.QuerySelectorAll("a[href*='://www.youtube.com/'],iframe[src*='://www.youtube.com/'],embed[src*='://www.youtube.com/'],[data-trailer-url*='://www.youtube.com/']");
 
             foreach (var link in youtubes)
             {
@@ -142,9 +143,17 @@ namespace JDBot.Infrastructure.Extractors
 
         public static IList<string> GetScreenshots(this IDocument doc, IHtmlCollection<IElement> screenshotsElements, string baseUrl = null)
         {
-            return screenshotsElements
-            .Select(s => AddBaseUrl(baseUrl, _removeSizeFromImageUrlRegex.Replace(s.Attributes["src"].Value, "")))
-            .ToArray();
+            var screenshots = new List<string>();
+
+            foreach (var e in screenshotsElements)
+            {
+                if (e.TagName.Equals("img", StringComparison.OrdinalIgnoreCase))
+                    screenshots.Add(AddBaseUrl(baseUrl, e.Attributes["src"].Value));
+                else if (e.TagName.Equals("a", StringComparison.OrdinalIgnoreCase))
+                    screenshots.Add(AddBaseUrl(baseUrl, e.Attributes["href"].Value));
+            }
+
+            return screenshots;
         }
 
         private static string AddBaseUrl(this string baseUrl, string relativeUrl)
@@ -156,6 +165,20 @@ namespace JDBot.Infrastructure.Extractors
                 return relativeUrl;
              else
                 return relativeUrl.StartsWith("/", StringComparison.OrdinalIgnoreCase) ? $"{baseUrl}{relativeUrl}" : $"{baseUrl}/{relativeUrl}";
+        }
+
+        public static async Task<IDocument> GetReferencedDocAsync(this IDocument mainDoc, Regex getDocRegex)
+        {
+            var content = mainDoc.QuerySelector("body").OuterHtml;
+            var match = getDocRegex.Match(content);
+
+            if (match.Success)
+            {
+                var url = Path.Combine(Path.GetDirectoryName(mainDoc.BaseUri), match.Groups["url"].Value);
+                return await url.GetContentAsync();
+            }
+            else
+                return mainDoc;
         }
     }
 }
