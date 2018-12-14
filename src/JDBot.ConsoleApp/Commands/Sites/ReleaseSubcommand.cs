@@ -40,7 +40,8 @@ namespace JDBot.ConsoleApp.Commands.Sites
             var version = await releaser.ReleaseAsync(Message, Patch);
 
             Logger.Info($"Versão: {version} liberada no master do GitHub.");
-           
+            Process.Start(new ProcessStartInfo { FileName = "https://ci.appveyor.com/project/giacomelli/jogosdaqui-github-io-jekyll/history", UseShellExecute = true });
+
             return 0;
         }
     }
