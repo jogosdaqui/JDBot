@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using JDBot.Domain.Sites;
 using JDBot.Infrastructure.Framework;
 using JDBot.Infrastructure.Git;
 using JDBot.Infrastructure.IO;
+using JDBot.Infrastructure.Net;
 using McMaster.Extensions.CommandLineUtils;
 
 namespace JDBot.ConsoleApp.Commands.Sites
@@ -40,7 +42,7 @@ namespace JDBot.ConsoleApp.Commands.Sites
             var version = await releaser.ReleaseAsync(Message, Patch);
 
             Logger.Info($"Versão: {version} liberada no master do GitHub.");
-            Process.Start(new ProcessStartInfo { FileName = "https://ci.appveyor.com/project/giacomelli/jogosdaqui-github-io-jekyll/history", UseShellExecute = true });
+            AppVeyorSitePublicationProxy.OpenHistoryPage();
 
             return 0;
         }
