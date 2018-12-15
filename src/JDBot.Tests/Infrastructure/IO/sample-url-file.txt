@@ -4,4 +4,4 @@
 # posts
 autor1;2018-11-28;http://www.monsterbed.com.br/games/trilha-ecologica/
 autor2;2018-11-29;http://www.monsterbed.com.br/games/isolados-a-fuga/
-autor3;2018-11-30;http://www.monsterbed.com.br/games/laco-macanudo-gaucho/
+autor3;2018-12-15;http://www.monsterbed.com.br/games/laco-macanudo-gaucho/
