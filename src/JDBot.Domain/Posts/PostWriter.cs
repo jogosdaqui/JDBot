@@ -132,6 +132,7 @@ namespace JDBot.Domain.Posts
 published: true
 layout: post
 title: '{post.GetWritableTitle()}'
+date: '{post.Date:yyyy-MM-dd HH:mm}'
 author: '{config.Author}'
 companies: '{String.Join(" ", post.Companies)}'
 categories: {post.Category}
