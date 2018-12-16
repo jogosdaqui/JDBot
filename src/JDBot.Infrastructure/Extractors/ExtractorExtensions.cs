@@ -50,6 +50,19 @@ namespace JDBot.Infrastructure.Extractors
             return value.ToLowerInvariant().Replace(" ", "-");
         }
 
+        public static void TranslateTags(this Post post)
+        {
+            for (int i = 0; i < post.Tags.Count; i++)
+            {
+                var translations = _tagRegex.GetResponsesByTag("translate", post.Tags[i]);
+
+                if(translations.Any())
+                    post.Tags[i] = translations.First();
+            }
+
+            post.Tags = post.Tags.Distinct().ToList();
+        }
+
         public static void FillTitle(this Post post, IDocument doc)
         {
             post.Title = _titleRegex.GetValueByTag("text", "title", doc.Title, doc.Body.TextContent);

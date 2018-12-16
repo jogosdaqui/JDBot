@@ -44,15 +44,20 @@ namespace JDBot.Infrastructure.Texts
 
         public IEnumerable<string> GetResponses(params string[] inputs)
         {
+            return GetResponsesByTag(null, inputs);
+        }
+
+        public IEnumerable<string> GetResponsesByTag(string tag, params string[] inputs)
+        {
             var result = new List<string>();
 
-            ExecuteRegexes(null, inputs, (match, info) =>
+            ExecuteRegexes(tag, inputs, (match, info) =>
             {
-                foreach(var r in info.Responses)
+                foreach (var r in info.Responses)
                 {
                     var resultItem = r;
 
-                    foreach(var groupName in info.Regex.GetGroupNames())
+                    foreach (var groupName in info.Regex.GetGroupNames())
                     {
                         resultItem = r.Replace($"${{{groupName}}}", match.Groups[groupName].Value);
                     }
