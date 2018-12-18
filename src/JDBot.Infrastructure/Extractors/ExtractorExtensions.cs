@@ -160,9 +160,9 @@ namespace JDBot.Infrastructure.Extractors
 
             foreach (var e in screenshotsElements)
             {
-                if (e.TagName.Equals("img", StringComparison.OrdinalIgnoreCase))
+                if (e.TagName.Equals("img", StringComparison.OrdinalIgnoreCase) && e.HasAttribute("src"))
                     screenshots.Add(AddBaseUrl(baseUrl, e.Attributes["src"].Value));
-                else if (e.TagName.Equals("a", StringComparison.OrdinalIgnoreCase))
+                else if (e.TagName.Equals("a", StringComparison.OrdinalIgnoreCase) && e.HasAttribute("href"))
                     screenshots.Add(AddBaseUrl(baseUrl, e.Attributes["href"].Value));
             }
 

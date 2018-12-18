@@ -95,5 +95,13 @@ namespace JDBot.Tests.Infrastructure.Extractors
             Assert.AreEqual("WNj67cSF_zg", actualVideos[1].Id);
             Assert.AreEqual("P21xzCgtfCQ", actualVideos[2].Id);
         }
+
+        [Test]
+        public async Task Extract_Url6_Post()
+        {
+            var target = new GenericPostExtractor();
+            var actual = await target.ExtractAsync("http://tetragongame.com/");
+            Assert.AreEqual("http://tetragongame.com//img/logo_tetragon.png", actual.Logo);
+        }
     }
 }
