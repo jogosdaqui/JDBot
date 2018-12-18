@@ -16,7 +16,6 @@ namespace JDBot.Infrastructure.Extractors
     {
         private static readonly Regex _getVimeoIdRegex = new Regex(@"vimeo.com/video/(?<id>\d+)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
         private static readonly Regex _getYoutubeIdRegex = new Regex(@"https*://www.youtube.com/(watch\?v=|embed/|v/)(?<id>[a-z0-9\-_]+)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-        private static readonly Regex _removeSizeFromImageUrlRegex = new Regex(@"\-\d+x\d+", RegexOptions.Compiled);
         private static readonly Regex _removePageRegex = new Regex(@"(?<baseUrl>.+)/.+\.(html|htm|php|aspx)$", RegexOptions.Compiled);
 
         private static readonly RegexFile _titleRegex = new RegexFile("Extractors/TitleRegex.json");
@@ -160,9 +159,9 @@ namespace JDBot.Infrastructure.Extractors
 
             foreach (var e in screenshotsElements)
             {
-                if (e.TagName.Equals("img", StringComparison.OrdinalIgnoreCase))
+                if (e.TagName.Equals("img", StringComparison.OrdinalIgnoreCase) && e.HasAttribute("src"))
                     screenshots.Add(AddBaseUrl(baseUrl, e.Attributes["src"].Value));
-                else if (e.TagName.Equals("a", StringComparison.OrdinalIgnoreCase))
+                else if (e.TagName.Equals("a", StringComparison.OrdinalIgnoreCase) && e.HasAttribute("href"))
                     screenshots.Add(AddBaseUrl(baseUrl, e.Attributes["href"].Value));
             }
 
