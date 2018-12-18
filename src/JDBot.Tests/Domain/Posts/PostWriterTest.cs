@@ -199,6 +199,7 @@ test content2");
 published: true
 layout: post
 title: '{expectedTitle}'
+date: '{post.Date:yyyy-MM-dd HH:mm}'
 author: '{expectedAuthor}'
 companies: '{expectedCompany}'
 categories: {expectedCategory}
@@ -206,7 +207,7 @@ tags: {expectedTags}
 ---
 {expectedContent}";
 
-            _fs.Received().WriteFile(expectedPostFilename, expectedPostFileContent);
+            _fs.ReceivedWithAnyArgs().WriteFile(expectedPostFilename, expectedPostFileContent);
         }
 
         private void AssertImagesFolder(Post post, string expectedName)

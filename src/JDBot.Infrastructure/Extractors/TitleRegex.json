@@ -10,6 +10,10 @@
       "pattern": "<title>\\s*(?<title>\\S.+\\S) (\\||-|–) .+\\s*</title>",
       "tags": [ "html" ]
     },
+    {
+      "pattern": ">(?<title>.+) is a \\dD .+ game",
+      "tags": [ "html" ]
+    },
 
 
     // TEXT

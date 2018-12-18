@@ -101,6 +101,7 @@ namespace JDBot.Tests.Infrastructure.Extractors
         {
             var target = new GenericPostExtractor();
             var actual = await target.ExtractAsync("http://tetragongame.com/");
+            Assert.AreEqual("Tetragon", actual.Title);
             Assert.AreEqual("http://tetragongame.com//img/logo_tetragon.png", actual.Logo);
         }
     }
