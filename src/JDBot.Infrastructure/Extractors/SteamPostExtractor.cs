@@ -42,7 +42,7 @@ namespace JDBot.Infrastructure.Extractors
 
         private static void AddTagsFromSystemRequirements(IDocument doc, Post post)
         {
-            var systemReq = doc.QuerySelector(".game_area_sys_req_leftCol").TextContent;
+            var systemReq = doc.QuerySelector(".game_area_sys_req_leftCol, .game_area_sys_req").TextContent;
 
             if (systemReq.Contains("Windows"))
                 post.Tags.Add("windows");

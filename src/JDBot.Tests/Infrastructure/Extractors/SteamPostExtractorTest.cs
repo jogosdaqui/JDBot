@@ -46,5 +46,14 @@ namespace JDBot.Tests.Infrastructure.Extractors
             var actualVideos = actual.Videos.ToArray();
             Assert.AreEqual(0, actualVideos.Length);
         }
+
+        [Test]
+        public async Task Extract_Variant2_Post()
+        {
+            var target = new SteamPostExtractor();
+            var actual = await target.ExtractAsync("https://store.steampowered.com/app/696140/No_Heroes_Here/");
+
+            Assert.IsNotNull(actual);
+        }
     }
 }
