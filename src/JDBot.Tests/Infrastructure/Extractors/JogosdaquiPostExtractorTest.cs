@@ -13,12 +13,12 @@ namespace JDBot.Tests.Infrastructure.Extractors
         public async Task Extract_Url1_Post()
         {
             var target = new JogosdaquiPostExtractor();
-            var actual = await target.ExtractAsync("https://jogosdaqui.github.io/2018/12/08/uga-buga-dino-rush");
+            var actual = await target.ExtractAsync("https://jogosdaqui.github.io/jogosdaqui.github.io-staging/2018/12/08/uga-buga-dino-rush");
             Assert.NotNull(actual);
             Assert.AreEqual("Uga Buga: Dino Rush", actual.Title);
             StringAssert.Contains("O Sr. Uga e a Sra. Buga precisam correr para encarar os perigos da Era das Cavernas.", actual.Content);
             StringAssert.Contains("Um jogo 100% brasileiro que vai agradar toda a família com certeza!", actual.Content);
-            Assert.AreEqual("https://jogosdaqui.github.io/assets/2018/12/08/uga-buga-dino-rush/logo.jpg", actual.Logo);
+            Assert.AreEqual("https://jogosdaqui.github.io/jogosdaqui.github.io-staging/assets/2018/12/08/uga-buga-dino-rush/logo.jpg", actual.Logo);
 
             var actualScreenshots = actual.Screenshots.ToArray();
             Assert.AreEqual(7, actualScreenshots.Length);

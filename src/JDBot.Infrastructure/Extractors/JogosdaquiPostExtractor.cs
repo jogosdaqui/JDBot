@@ -16,7 +16,7 @@ namespace JDBot.Infrastructure.Extractors
             post.Category = PostCategory.Game;
             post.FillOriginalUrl(url);
             post.FillVideos(doc);
-            post.FillCompanies(doc);
+            post.Companies = doc.QuerySelectorAll(".company-name").Select(t => t.TextContent.Trim()).ToList();
             post.Tags = doc.QuerySelectorAll(".post-tag").Select(t => t.TextContent.Trim()).ToList();
             post.Screenshots = doc.GetScreenshots("li img", "https://jogosdaqui.github.io");
             post.Logo = doc.GetLogo(".entry center > img", "https://jogosdaqui.github.io");    

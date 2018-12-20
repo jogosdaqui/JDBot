@@ -84,12 +84,8 @@ namespace JDBot.Infrastructure.Videos
             }
 
             var outputFilename = FileSystem.GetOutputPath("output.mp4");
-
-            //Run($"-f concat -safe 0 -i {inputFilename} -vsync vfr -pix_fmt yuv420p {outputFilename}");
             var imagesLength = imagesArguments.Count();
-            //Run($"-loop 1 {String.Join(" ", imagesArguments.ToArray())}  -f lavfi -t 3 -i anullsrc -filter_complex \"[{imagesLength}:a]asplit[i][e];[0] fade=out:st=0:d=3[0f];[1] fade=in:st=0:d=3[1f];[0f] [i] [{imagesLength}:v] [{imagesLength}:a] [1f] [e] concat=n={imagesLength}:v=1:a=1[v] [a]\" -map [v] -map [a] {outputFilename}");
-            // http://hamelot.io/visualization/using-ffmpeg-to-convert-a-set-of-images-into-a-video/
-            Run($"-r 60 -f {filename} -s 1920x1080 -i input_%04d.png -vcodec libx264 -crf 25 -pix_fmt yuv420p test.mp4");
+            Run($"-f image2 -framerate 1/5 -i input_%04d.png -c:v libx264 -pix_fmt yuv420p -vf scale=1280:720:force_original_aspect_ratio=decrease {outputFilename}");
 
             return outputFilename;
         }

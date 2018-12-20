@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using JDBot.Domain.Posts;
 using JDBot.Infrastructure.Extractors;
