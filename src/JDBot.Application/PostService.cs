@@ -23,6 +23,7 @@ namespace JDBot.Application
                 new DoPresskitVariant1PostExtractor(),
                 new DoPresskitVariant2PostExtractor(),
                 new GooglePlayPostExtractor(),
+                new SteamPostExtractor(),
                 new GenericPostExtractor()
             };
 

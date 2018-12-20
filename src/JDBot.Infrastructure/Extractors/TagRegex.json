@@ -65,9 +65,24 @@
       "pattern": "Plataform / iOS",
       "responses": [ "ios", "mobile" ]
     },
-    { 
+    {
       "pattern": "Plataform / Android, iOS",
       "responses": [ "android", "ios", "mobile" ]
+    },
+    {
+      "pattern": "racing",
+      "responses": [ "corrida" ],
+      "tags": [ "translate" ]
+    },
+    {
+      "pattern": "simulation",
+      "responses": [ "simulacao" ],
+      "tags": [ "translate" ]
+    },
+    {
+      "pattern": "sports",
+      "responses": [ "esporte" ],
+      "tags": [ "translate" ]
     }
   ]
 }
