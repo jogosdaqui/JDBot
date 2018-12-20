@@ -38,6 +38,7 @@ namespace JDBot.ConsoleApp.Commands.Sites
                 Logger.Info("Iniciando a publicação...");
                 await publisher.PublishAsync();
                 Logger.Info($"Publicação agendada no AppVeyor. Em minutos o site estará atualizado.");
+                AppVeyorSitePublicationProxy.OpenHistoryPage();
                 return 0;
             }
             else if (Status)

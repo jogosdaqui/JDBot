@@ -145,7 +145,7 @@ namespace JDBot.Infrastructure.Extractors
         {
             var logo = doc.QuerySelector(selector);
 
-            return logo == null ? null : AddBaseUrl(baseUrl, logo.Attributes["src"].Value);
+            return logo == null ? null : GetImageFromAttributes(logo, baseUrl);
         }
 
         public static IList<string> GetScreenshots(this IDocument doc, string selector, string baseUrl = null)
@@ -159,13 +159,29 @@ namespace JDBot.Infrastructure.Extractors
 
             foreach (var e in screenshotsElements)
             {
-                if (e.TagName.Equals("img", StringComparison.OrdinalIgnoreCase) && e.HasAttribute("src"))
-                    screenshots.Add(AddBaseUrl(baseUrl, e.Attributes["src"].Value));
-                else if (e.TagName.Equals("a", StringComparison.OrdinalIgnoreCase) && e.HasAttribute("href"))
-                    screenshots.Add(AddBaseUrl(baseUrl, e.Attributes["href"].Value));
+                var img = GetImageFromAttributes(e, baseUrl);
+
+                if (img != null)
+                    screenshots.Add(img);
             }
 
             return screenshots;
+        }
+
+
+        private static string GetImageFromAttributes(IElement e, string baseUrl = null)
+        {
+            if (e.TagName.Equals("img", StringComparison.OrdinalIgnoreCase))
+            {
+                if (e.HasAttribute("data-src"))
+                    return AddBaseUrl(baseUrl, e.Attributes["data-src"].Value);
+                if (e.HasAttribute("src"))
+                    return AddBaseUrl(baseUrl, e.Attributes["src"].Value);
+            }
+            else if (e.TagName.Equals("a", StringComparison.OrdinalIgnoreCase) && e.HasAttribute("href"))
+                return AddBaseUrl(baseUrl, e.Attributes["href"].Value);
+
+            return null;
         }
 
         private static string AddBaseUrl(this string baseUrl, string relativeUrl)

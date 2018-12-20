@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
@@ -10,6 +11,11 @@ namespace JDBot.Infrastructure.Net
     {
         private static readonly string _apiUrl = "https://ci.appveyor.com/api/";
         private readonly string _apiKey;
+
+        public static void OpenHistoryPage()
+        {
+            Process.Start(new ProcessStartInfo { FileName = "https://ci.appveyor.com/project/giacomelli/jogosdaqui-github-io-jekyll/history", UseShellExecute = true });
+        }
 
         public AppVeyorSitePublicationProxy(string apiKey)
         {
