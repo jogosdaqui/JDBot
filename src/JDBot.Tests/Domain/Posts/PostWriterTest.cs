@@ -31,7 +31,7 @@ namespace JDBot.Tests.Domain.Posts
         public async Task WriteAsync_Post_Value()
         {
             var screenshot1 = new ImageResource(new byte[] { 1, 1, 1 }, ".png");
-            _web.DownloadImageAsync("http://test/screenshot1.png").Returns(screenshot1);
+            _web.DownloadImageAsync("http://test/screenshot 1.png").Returns(screenshot1);
 
             var screenshot2 = new ImageResource(new byte[] { 2, 2, 2 }, ".png");
             _web.DownloadImageAsync("http://test/screenshot2.png").Returns(screenshot2);
@@ -51,7 +51,7 @@ namespace JDBot.Tests.Domain.Posts
                 Tags = new string[] { "test-company", "test-tag" },
                 Content = "test content1\ntest content2",
                 Logo = "http://test/screenshot3.png",
-                Screenshots = new string[] { "http://test/screenshot1.png", "http://test/screenshot2.png", "http://test/screenshot3.png" }
+                Screenshots = new string[] { "http://test/screenshot 1.png", "http://test/screenshot2.png", "http://test/screenshot3.png" }
             };
 
             var config = new PostConfig { Author = "Test author", IgnoreImagesLowerThanBytes = 3 };
@@ -223,7 +223,10 @@ tags: {expectedTags}
 
             for (int i = 0; i < screenshots.Length; i++)
             {
-                _fs.Received().WriteFile(Path.Combine(expectedImagesFolder, Path.GetFileName(postScreenshots[i])), screenshots[i].Data);
+                var filename = Path.GetFileName(postScreenshots[i]);
+                StringAssert.DoesNotContain(" ", filename);
+
+                _fs.Received().WriteFile(Path.Combine(expectedImagesFolder, filename), screenshots[i].Data);
             }
         }
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using JDBot.Infrastructure.Framework;
+using static JDBot.Infrastructure.Framework.Logger;
 
 namespace JDBot.Domain.Posts
 {
@@ -28,41 +29,39 @@ namespace JDBot.Domain.Posts
         {
             if (!String.IsNullOrEmpty(config.Title))
                 post.Title = config.Title;
-
-            Logger.Info($"Escrevendo o post {post.Title}...");
+            Info($"Escrevendo o post {post.Title}...");
             Sanitize(post);
 
             var date = config.Date ?? post.Date;
             var postInfo = new PostInfo(_jekyllRootFolder, post.Title, date);
             var content = GetPostContent(post, config);
             var postName = post.GetWritableName();
-
-            Logger.Debug($"Criando a pasta do post...");
+            Debug($"Criando a pasta do post...");
             var postFolder = Path.GetDirectoryName(postInfo.FileName);
             _fs.CreateDirectory(postFolder);
-
-            Logger.Debug($"Escrevendo o arquivo do post...");
+            Debug($"Escrevendo o arquivo do post...");
             _fs.WriteFile(postInfo.FileName, content);
-
-            Logger.Debug($"Criando a pasta de imagens do post....");
+            Debug($"Criando a pasta de imagens do post....");
             var imagesFolder = postInfo.ImagesFolder;
             _fs.CreateDirectory(imagesFolder);
-
-            Logger.Debug($"Realizando o download das imagens e gravando na pasta...");
-            foreach (var screenshot in post.Screenshots)
+            Debug($"Realizando o download das imagens e gravando na pasta...");
+            for(var i = 0; i < post.Screenshots.Count; i++)
             {
-                Logger.Debug($"Screenshot {screenshot}");
+                var screenshot = post.Screenshots[i];
+                Debug($"Screenshot {screenshot}");
                 var image = await _web.DownloadImageAsync(screenshot);
+
+                post.Screenshots[i] = screenshot = GetScreenshotFilename(screenshot, image);
 
                 if (image.Data.Length >= config.IgnoreImagesLowerThanBytes)
                 {
-                    var fileName = Path.Combine(imagesFolder, $"{Path.GetFileNameWithoutExtension(screenshot)}{image.Extension}");
+                    var fileName = Path.Combine(imagesFolder, screenshot);
 
-                    Logger.Debug($"Gravando screenshot {fileName}...");
+                    Debug($"Gravando screenshot {fileName}...");
                     _fs.WriteFile(fileName, image.Data);
                 }
                 else
-                    Logger.Warn("Não será gravada, pois é menor que o tamanho mínimo esperado.");
+                    Warn("Não será gravada, pois é menor que o tamanho mínimo esperado.");
             }
 
             // Grava o logo.
@@ -70,12 +69,19 @@ namespace JDBot.Domain.Posts
             {
                 var image = await _web.DownloadImageAsync(post.Logo);
                 var fileName = Path.Combine(imagesFolder, $"logo{image.Extension}");
-
-                Logger.Debug($"Gravando logo {fileName}...");
+                Debug($"Gravando logo {fileName}...");
                 _fs.WriteFile(fileName, image.Data);
             }
 
             return postInfo;
+        }
+
+        private string GetScreenshotFilename(string screenshot, ImageResource image)
+        {
+            return $"{Path.GetFileNameWithoutExtension(screenshot)}{image.Extension}"
+                .Replace("(", "-")
+                .Replace(")", "-")
+                .GetWritetablePostName();
         }
 
         public async Task<PostInfo> RenameAsync(PostInfo oldPost, PostInfo newPost)
