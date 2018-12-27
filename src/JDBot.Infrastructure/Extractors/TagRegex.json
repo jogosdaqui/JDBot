@@ -75,13 +75,18 @@
       "tags": [ "translate" ]
     },
     {
-      "pattern": "simulation",
+      "pattern": "(simulation|simulação)",
       "responses": [ "simulacao" ],
       "tags": [ "translate" ]
     },
     {
-      "pattern": "sports",
+      "pattern": "(sports|esportes)",
       "responses": [ "esporte" ],
+      "tags": [ "translate" ]
+    },
+    {
+      "pattern": "(multijogador)",
+      "responses": [ "multiplayer" ],
       "tags": [ "translate" ]
     }
   ]

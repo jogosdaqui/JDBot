@@ -15,7 +15,7 @@ namespace JDBot.Infrastructure.Extractors
 
         public async Task<Post> ExtractAsync(string url)
         {
-            var doc = await url.GetContentAsync();
+            var doc = await $"{url}?l=brazilian".GetContentAsync();
             var contentElement = doc.QuerySelector(".game_area_description");
             var titleElement = doc.QuerySelector(".apphub_AppName");
 
