@@ -26,6 +26,9 @@ namespace JDBot.Domain.Posts
 
         public async Task<PostInfo> WriteAsync(Post post, PostConfig config)
         {
+            if (!String.IsNullOrEmpty(config.Title))
+                post.Title = config.Title;
+
             Logger.Info($"Escrevendo o post {post.Title}...");
             Sanitize(post);
 

@@ -18,6 +18,9 @@ namespace JDBot.ConsoleApp.Commands.Posts
         [Option("--url", Description = "A URL do post original")]
         public string Url { get; set; }
 
+        [Option("--title", Description = "O título do post.")]
+        public string Title { get; set; }
+
         [Option("--date", Description = "A data do post")]
         public string Date { get; set; } = DateTime.Now.ToString("yyyy-MM-dd");
 
@@ -36,12 +39,12 @@ namespace JDBot.ConsoleApp.Commands.Posts
 
             if (!string.IsNullOrEmpty(Url) && !String.IsNullOrEmpty(Jekyll))
             {
-                var result = await RunWithArguments(Url, Jekyll, DateTime.Parse(Date), Author);
+                var result = await RunWithArguments();
                 OpenPostForEdit(result);
             }
             else if (!String.IsNullOrEmpty(File))
             {
-                var results = await RunWithUrlFile(File);
+                var results = await RunWithUrlFile();
                 OpenPostForEdit(results);
             }
             else 
@@ -54,16 +57,21 @@ namespace JDBot.ConsoleApp.Commands.Posts
             return 0;
         }
 
-        private async Task<PostInfo> RunWithArguments(string url, string jekyllRootFolder, DateTime date, string author)
+        private async Task<PostInfo> RunWithArguments()
         {
-            var postService = new PostService(jekyllRootFolder);
-            return await postService.WritePostAsync(url, new PostConfig { Author = author, Date = date });
+            var postService = new PostService(Jekyll);
+            return await postService.WritePostAsync(Url, new PostConfig 
+            {
+                Title = this.Title,
+                Author = this.Author,
+                Date = DateTime.Parse(Date),
+            });
         }
 
-        private async Task<PostInfo[]> RunWithUrlFile(string file)
+        private async Task<PostInfo[]> RunWithUrlFile()
         {
             var results = new List<PostInfo>();
-            var urlFile = UrlFileParser.Parse(file);
+            var urlFile = UrlFileParser.Parse(File);
             var postService = new PostService(urlFile.JekyllRootFolder);
 
             Logger.Info($"Items: {urlFile.Items.Count()}");
